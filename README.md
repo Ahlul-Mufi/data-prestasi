@@ -9,17 +9,27 @@ UAS Pemrograman Backend Lanjut – Backend REST API
 
 📌 Deskripsi Project
 Aplikasi Backend REST API untuk mengelola pelaporan prestasi mahasiswa, dilengkapi dengan sistem autentikasi, verifikasi dosen wali, dan integrasi database ganda (PostgreSQL + MongoDB).
+
 Fitur Utama:
+
 🔐 Role Based Access Control (RBAC)
+
 🔑 Autentikasi JWT
+
 🗂️ Pelaporan prestasi dinamis (MongoDB)
+
 👨‍🏫 Verifikasi prestasi oleh dosen wali
+
 👥 Manajemen pengguna (admin, mahasiswa, dosen)
+
 📊 Dashboard statistik dasar
+
 📎 Upload lampiran prestasi
+
 📘 Dokumentasi standar SRS (Software Requirement Specification)
 
 🧱 Arsitektur Sistem
+
 🗄️ Database
 | Jenis                        | Kegunaan                                     |
 | ---------------------------- | -------------------------------------------- |
@@ -34,10 +44,15 @@ Fitur Utama:
 | **Dosen Wali** | Melihat prestasi bimbingan, verifikasi/menolak   |
 
 🔄 Alur Sistem
+
 Mahasiswa membuat laporan prestasi
+
 Mahasiswa mengirim (submit) prestasi
+
 Dosen wali melihat daftar prestasi mahasiswa bimbingan
+
 Dosen memverifikasi / menolak prestasi
+
 Admin dapat melihat seluruh histori prestasi
 
 🛠️ Teknologi yang Digunakan
