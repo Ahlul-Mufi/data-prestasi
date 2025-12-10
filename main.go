@@ -21,6 +21,7 @@ func main() {
             log.Printf("Error closing database connection: %v", err)
         }
     }()
+
     app := fiber.New(fiber.Config{
         ErrorHandler: func(c *fiber.Ctx, err error) error {
             code := fiber.StatusInternalServerError
@@ -33,6 +34,7 @@ func main() {
             })
         },
     })
+    
     app.Use(logger.New())
     app.Use(cors.New())
 
@@ -40,6 +42,7 @@ func main() {
     userService := servicepostgre.NewUserService(userRepo)
 
     postgreroute.SetupRoutes(app, userService)
+    
     port := os.Getenv("PORT")
     if port == "" {
         port = "3000"

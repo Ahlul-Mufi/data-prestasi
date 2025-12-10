@@ -19,6 +19,23 @@ type User struct {
     UpdatedAt    time.Time  `json:"updated_at"`
 }
 
+type CreateUserRequest struct {
+    Username string `json:"username"`
+    Email string `json:"email"`
+    Password string `json:"password"`
+    FullName string `json:"full_name"`
+    RoleName string `json:"role_name"`
+    IsActive bool `json:"is_active"`
+}
+type UpdateUserRequest struct {
+    Username string `json:"username"`
+    Email string `json:"email"`
+    Password *string `json:"password"`
+    FullName string `json:"full_name"`
+    RoleName string `json:"role_name"`
+    IsActive *bool `json:"is_active"`
+}
+
 type LoginRequest struct {
     Identity string `json:"identity"`
     Password string `json:"password"`
