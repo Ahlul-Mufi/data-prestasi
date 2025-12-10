@@ -5,7 +5,7 @@ import (
 	"github.com/gofiber/fiber/v2"
 )
 
-func SetupRoutes(app *fiber.App, roleService servicepostgre.RoleService) {
+func SetupRoleRoutes(app *fiber.App, roleService servicepostgre.RoleService) {
     role := app.Group("/role")
 
     role.Get("/", roleService.GetAll)
