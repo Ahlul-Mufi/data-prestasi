@@ -1,8 +1,8 @@
 package servicepostgre
 
 import (
-	"database/sql"
 	"errors"
+	"strings"
 
 	m "github.com/Ahlul-Mufi/data-prestasi/app/model/postgre"
 	repo "github.com/Ahlul-Mufi/data-prestasi/app/repository/postgre"
@@ -10,11 +10,9 @@ import (
 	"github.com/gofiber/fiber/v2"
 	"github.com/google/uuid"
 )
-
 type RolePermissionService interface {
-	AddPermissionToRole(c *fiber.Ctx) error
-	RemovePermissionFromRole(c *fiber.Ctx) error
-	GetPermissionsByRoleID(c *fiber.Ctx) error
+	Add(c *fiber.Ctx) error
+	Remove(c *fiber.Ctx) error
 }
 
 type rolePermissionService struct {
@@ -25,67 +23,47 @@ func NewRolePermissionService(r repo.RolePermissionRepository) RolePermissionSer
 	return &rolePermissionService{r}
 }
 
-func (s *rolePermissionService) AddPermissionToRole(c *fiber.Ctx) error {
+func (s *rolePermissionService) Add(c *fiber.Ctx) error {
 	var req m.AddRolePermissionRequest
 	if err := c.BodyParser(&req); err != nil {
 		return helper.ErrorResponse(c, fiber.StatusBadRequest, "Invalid request body", err.Error())
 	}
 
-	rp := m.RolePermission{
-		RoleID:       req.RoleID,
-		PermissionID: req.PermissionID,
+	if req.RoleID == uuid.Nil || req.PermissionID == uuid.Nil {
+		return helper.ErrorResponse(c, fiber.StatusBadRequest, "Invalid IDs", "RoleID and PermissionID must be provided.")
 	}
 
-	newRP, err := s.repo.AddPermissionToRole(rp)
+    rp := m.RolePermission(req)
+
+	result, err := s.repo.Add(rp)
 	if err != nil {
-		if errors.Is(err, sql.ErrNoRows) || errors.Is(err, errors.New("permission already linked to role")) {
-			return helper.ErrorResponse(c, fiber.StatusConflict, "Permission already linked to role", err.Error())
-		}
-		return helper.ErrorResponse(c, fiber.StatusInternalServerError, "Failed to add permission to role", err.Error())
+        if strings.Contains(err.Error(), "role or permission not found") {
+            return helper.ErrorResponse(c, fiber.StatusNotFound, "Not Found", "One or both IDs (Role/Permission) do not exist.")
+        }
+		return helper.ErrorResponse(c, fiber.StatusInternalServerError, "Failed to add role permission", err.Error())
 	}
 
-	return helper.SuccessResponse(c, fiber.StatusCreated, newRP)
+	return helper.SuccessResponse(c, fiber.StatusCreated, result)
 }
 
-func (s *rolePermissionService) RemovePermissionFromRole(c *fiber.Ctx) error {
-	roleIDStr := c.Params("roleId")
-	permissionIDStr := c.Params("permissionId")
-	
-	roleID, err := uuid.Parse(roleIDStr)
-	if err != nil {
-		return helper.ErrorResponse(c, fiber.StatusBadRequest, "Invalid role ID format", err.Error())
+func (s *rolePermissionService) Remove(c *fiber.Ctx) error {
+	var req m.RolePermission
+	if err := c.BodyParser(&req); err != nil {
+		return helper.ErrorResponse(c, fiber.StatusBadRequest, "Invalid request body", err.Error())
 	}
 	
-	permissionID, err := uuid.Parse(permissionIDStr)
-	if err != nil {
-		return helper.ErrorResponse(c, fiber.StatusBadRequest, "Invalid permission ID format", err.Error())
+	if req.RoleID == uuid.Nil || req.PermissionID == uuid.Nil {
+		return helper.ErrorResponse(c, fiber.StatusBadRequest, "Invalid IDs", "RoleID and PermissionID must be provided.")
 	}
 
-	err = s.repo.RemovePermissionFromRole(roleID, permissionID)
+	err := s.repo.Remove(req.RoleID, req.PermissionID)
+
 	if err != nil {
-		if errors.Is(err, sql.ErrNoRows) {
-			return helper.ErrorResponse(c, fiber.StatusNotFound, "Role-Permission relation not found", err.Error())
+		if errors.Is(err, errors.New("role permission not found")) {
+			return helper.ErrorResponse(c, fiber.StatusNotFound, "Not Found", "The specified role permission link does not exist.")
 		}
-		return helper.ErrorResponse(c, fiber.StatusInternalServerError, "Failed to remove permission from role", err.Error())
+		return helper.ErrorResponse(c, fiber.StatusInternalServerError, "Failed to remove role permission", err.Error())
 	}
 
-	return helper.SuccessResponse(c, fiber.StatusOK, fiber.Map{
-		"message": "Permission removed from role successfully",
-	})
-}
-
-func (s *rolePermissionService) GetPermissionsByRoleID(c *fiber.Ctx) error {
-	roleIDStr := c.Params("roleId")
-	
-	roleID, err := uuid.Parse(roleIDStr)
-	if err != nil {
-		return helper.ErrorResponse(c, fiber.StatusBadRequest, "Invalid role ID format", err.Error())
-	}
-	
-	perms, err := s.repo.GetPermissionsByRoleID(roleID)
-	if err != nil {
-		return helper.ErrorResponse(c, fiber.StatusInternalServerError, "Failed to fetch permissions", err.Error())
-	}
-	
-	return helper.SuccessResponse(c, fiber.StatusOK, perms)
+	return helper.SuccessResponse(c, fiber.StatusOK, fiber.Map{"message": "Role permission removed successfully"})
 }

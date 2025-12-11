@@ -18,7 +18,7 @@ const (
 type AchievementReference struct {
     ID                 uuid.UUID         `json:"id"`
     StudentID          uuid.UUID         `json:"student_id"`
-    MongoAchievementID string            `json:"mongo_achievement_id"`
+    MongoAchievementID string            `json:"mongo_achievement_id"` 
     Status             AchievementStatus `json:"status"`
     SubmittedAt        *time.Time        `json:"submitted_at"`
     VerifiedAt         *time.Time        `json:"verified_at"`
@@ -29,13 +29,14 @@ type AchievementReference struct {
 }
 
 type CreateAchievementRefRequest struct {
-    StudentID          uuid.UUID         `json:"student_id"`
-    MongoAchievementID string            `json:"mongo_achievement_id"`
-    Status             AchievementStatus `json:"status"`
+    MongoAchievementID string `json:"mongo_achievement_id" validate:"required"`
+}
+
+type VerificationRequest struct {
+    RejectionNote *string `json:"rejection_note"`
 }
 
 type UpdateAchievementRefRequest struct {
-    Status        AchievementStatus `json:"status"`
-    VerifiedBy    *uuid.UUID        `json:"verified_by"`
-    RejectionNote *string           `json:"rejection_note"`
+    MongoAchievementID *string           `json:"mongo_achievement_id"`
+    Status             AchievementStatus `json:"status"` 
 }

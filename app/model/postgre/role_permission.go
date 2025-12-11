@@ -8,6 +8,6 @@ type RolePermission struct {
 }
 
 type AddRolePermissionRequest struct {
-    RoleID       uuid.UUID `json:"role_id"`
-    PermissionID uuid.UUID `json:"permission_id"`
+    RoleID       uuid.UUID `json:"role_id" validate:"required"`
+    PermissionID uuid.UUID `json:"permission_id" validate:"required"`
 }

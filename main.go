@@ -22,33 +22,30 @@ func main() {
         }
     }()
     
-    app := fiber.New()
-    
-    app.Use(logger.New())
+    app := fiber.New(fiber.Config{
+    })
+
     app.Use(cors.New())
+    app.Use(logger.New())
 
     userRepo := repositorypostgre.NewUserRepository(database.DB)
-    permissionRepo := repositorypostgre.NewPermissionRepository(database.DB)
-    rolePermissionRepo := repositorypostgre.NewRolePermissionRepository(database.DB)
+    rolePermissionRepo := repositorypostgre.NewRolePermissionRepository(database.DB) 
+    achievementReferenceRepo := repositorypostgre.NewAchievementReferenceRepository(database.DB) 
 
     userService := servicepostgre.NewUserService(userRepo)
-    permissionService := servicepostgre.NewPermissionService(permissionRepo)
     rolePermissionService := servicepostgre.NewRolePermissionService(rolePermissionRepo)
+    achievementReferenceService := servicepostgre.NewAchievementReferenceService(achievementReferenceRepo)
 
     postgreroute.SetupRoutes(
         app, 
         userService, 
-        userRepo, 
-        permissionService, 
-        permissionRepo,
-        rolePermissionService,
-    )
-    
+        rolePermissionService, 
+        achievementReferenceService,
+    ) 
+
     port := os.Getenv("PORT")
     if port == "" {
         port = "3000"
     }
-
-    log.Printf("Server is running on port :%s", port)
     log.Fatal(app.Listen(":" + port))
 }
