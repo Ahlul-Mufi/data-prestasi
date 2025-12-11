@@ -21,7 +21,7 @@ func main() {
             log.Printf("Error closing database connection: %v", err)
         }
     }()
-
+    
     app := fiber.New(fiber.Config{
         ErrorHandler: func(c *fiber.Ctx, err error) error {
             code := fiber.StatusInternalServerError
@@ -30,6 +30,8 @@ func main() {
             }
             c.Set(fiber.HeaderContentType, fiber.MIMEApplicationJSON)
             return c.Status(code).JSON(fiber.Map{
+                "success": false,
+                "message": "Internal Server Error",
                 "error": err.Error(),
             })
         },

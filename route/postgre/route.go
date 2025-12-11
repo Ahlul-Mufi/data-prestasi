@@ -6,9 +6,9 @@ import (
 )
 
 func SetupRoutes(app *fiber.App, userService interface{}) {
-    api := app.Group("/api/v1")
+    api := app.Group("/api/v1") 
     us := userService.(servicepostgre.UserService)
 
     SetupAuthRoutes(api, us)
-    SetupUserRoutes(api, us) 
+    SetupUserRoutes(api, us)
 }

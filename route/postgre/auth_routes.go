@@ -7,7 +7,10 @@ import (
 )
 
 func SetupAuthRoutes(api fiber.Router, userService servicepostgre.UserService) {
-    api.Post("/login", userService.Login)
+    authGroup := api.Group("/auth")
 
-    api.Get("/profile", mw.AuthMiddleware(), userService.Profile)
+    authGroup.Post("/login", userService.Login)
+    authGroup.Post("/refresh", userService.Refresh)
+    authGroup.Post("/logout", mw.AuthMiddleware(), userService.Logout) 
+    authGroup.Get("/profile", mw.AuthMiddleware(), userService.Profile)
 }
