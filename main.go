@@ -22,28 +22,27 @@ func main() {
         }
     }()
     
-    app := fiber.New(fiber.Config{
-        ErrorHandler: func(c *fiber.Ctx, err error) error {
-            code := fiber.StatusInternalServerError
-            if e, ok := err.(*fiber.Error); ok {
-                code = e.Code
-            }
-            c.Set(fiber.HeaderContentType, fiber.MIMEApplicationJSON)
-            return c.Status(code).JSON(fiber.Map{
-                "success": false,
-                "message": "Internal Server Error",
-                "error": err.Error(),
-            })
-        },
-    })
+    app := fiber.New()
     
     app.Use(logger.New())
     app.Use(cors.New())
 
     userRepo := repositorypostgre.NewUserRepository(database.DB)
-    userService := servicepostgre.NewUserService(userRepo)
+    permissionRepo := repositorypostgre.NewPermissionRepository(database.DB)
+    rolePermissionRepo := repositorypostgre.NewRolePermissionRepository(database.DB)
 
-    postgreroute.SetupRoutes(app, userService)
+    userService := servicepostgre.NewUserService(userRepo)
+    permissionService := servicepostgre.NewPermissionService(permissionRepo)
+    rolePermissionService := servicepostgre.NewRolePermissionService(rolePermissionRepo)
+
+    postgreroute.SetupRoutes(
+        app, 
+        userService, 
+        userRepo, 
+        permissionService, 
+        permissionRepo,
+        rolePermissionService,
+    )
     
     port := os.Getenv("PORT")
     if port == "" {
