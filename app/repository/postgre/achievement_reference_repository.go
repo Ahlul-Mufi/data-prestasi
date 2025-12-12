@@ -17,6 +17,9 @@ type AchievementReferenceRepository interface {
 	Delete(id uuid.UUID) error
 	GetFiltered(userID *uuid.UUID, status *m.AchievementStatus) ([]m.AchievementReference, error)
 	UpdateStatus(id, verifierID uuid.UUID, newStatus m.AchievementStatus, rejectionNote *string) (m.AchievementReference, error)
+	FindByStudentID(studentID uuid.UUID) ([]m.AchievementReference, error)
+	CreateHistory(h m.AchievementHistory) error
+	FindHistoryByAchievementRefID(refID uuid.UUID) ([]m.AchievementHistory, error)
 }
 
 type achievementReferenceRepository struct {
@@ -67,7 +70,6 @@ func scanAchievementReference(row *sql.Row) (m.AchievementReference, error) {
 
 	return ref, nil
 }
-
 
 func (r *achievementReferenceRepository) Create(a m.AchievementReference) (m.AchievementReference, error) {
 	a.ID = uuid.New()
@@ -133,9 +135,9 @@ func (r *achievementReferenceRepository) Update(a m.AchievementReference) (m.Ach
 	row := r.db.QueryRow(query,
 		a.MongoAchievementID, a.Status, submittedAtDB, a.UpdatedAt, a.ID,
 	)
-	
+
 	ref, err := scanAchievementReference(row)
-	
+
 	if errors.Is(err, sql.ErrNoRows) {
 		return m.AchievementReference{}, errors.New("achievement reference not found or cannot be updated")
 	}
@@ -184,7 +186,7 @@ func (r *achievementReferenceRepository) GetFiltered(userID *uuid.UUID, status *
 		argCount++
 	}
 
-	rows, err := r.db.Query(baseQuery + " ORDER BY created_at DESC", args...)
+	rows, err := r.db.Query(baseQuery+" ORDER BY created_at DESC", args...)
 	if err != nil {
 		return nil, err
 	}
@@ -256,4 +258,119 @@ func (r *achievementReferenceRepository) UpdateStatus(id, verifierID uuid.UUID, 
 		return m.AchievementReference{}, err
 	}
 	return ref, nil
+}
+
+func (r *achievementReferenceRepository) FindByStudentID(studentID uuid.UUID) ([]m.AchievementReference, error) {
+	query := `
+		SELECT id, student_id, mongo_achievement_id, status, submitted_at, verified_at, verified_by, rejection_note, created_at, updated_at
+		FROM achievement_references
+		WHERE student_id = $1
+		ORDER BY created_at DESC
+	`
+	rows, err := r.db.Query(query, studentID)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+
+	var refs []m.AchievementReference
+	for rows.Next() {
+		var ref m.AchievementReference
+		var submittedAt sql.NullTime
+		var verifiedAt sql.NullTime
+		var verifiedByID sql.NullString
+		var rejectionNote sql.NullString
+
+		err := rows.Scan(
+			&ref.ID, &ref.StudentID, &ref.MongoAchievementID, &ref.Status,
+			&submittedAt, &verifiedAt, &verifiedByID, &rejectionNote,
+			&ref.CreatedAt, &ref.UpdatedAt,
+		)
+		if err != nil {
+			return nil, err
+		}
+
+		if submittedAt.Valid {
+			ref.SubmittedAt = &submittedAt.Time
+		}
+		if verifiedAt.Valid {
+			ref.VerifiedAt = &verifiedAt.Time
+		}
+		if verifiedByID.Valid {
+			id, _ := uuid.Parse(verifiedByID.String)
+			ref.VerifiedBy = &id
+		}
+		if rejectionNote.Valid {
+			ref.RejectionNote = &rejectionNote.String
+		}
+
+		refs = append(refs, ref)
+	}
+
+	if err := rows.Err(); err != nil {
+		return nil, err
+	}
+
+	return refs, nil
+}
+
+func (r *achievementReferenceRepository) CreateHistory(h m.AchievementHistory) error {
+	h.ID = uuid.New()
+	h.CreatedAt = time.Now()
+
+	var noteDB interface{} = nil
+	if h.Note != nil {
+		noteDB = *h.Note
+	}
+
+	query := `
+        INSERT INTO achievement_histories 
+        (id, achievement_ref_id, previous_status, new_status, changed_by_user_id, note, created_at)
+        VALUES ($1, $2, $3, $4, $5, $6, $7)
+	`
+	_, err := r.db.Exec(query,
+		h.ID, h.AchievementRefID, h.PreviousStatus, h.NewStatus, h.ChangedByUserID, noteDB, h.CreatedAt,
+	)
+	return err
+}
+
+func (r *achievementReferenceRepository) FindHistoryByAchievementRefID(refID uuid.UUID) ([]m.AchievementHistory, error) {
+	query := `
+        SELECT id, achievement_ref_id, previous_status, new_status, changed_by_user_id, note, created_at
+        FROM achievement_histories
+        WHERE achievement_ref_id = $1
+        ORDER BY created_at ASC
+	`
+	rows, err := r.db.Query(query, refID)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+
+	var histories []m.AchievementHistory
+	for rows.Next() {
+		var h m.AchievementHistory
+		var note sql.NullString
+
+		err := rows.Scan(
+			&h.ID, &h.AchievementRefID, &h.PreviousStatus, &h.NewStatus, &h.ChangedByUserID, &note, &h.CreatedAt,
+		)
+		if err != nil {
+			return nil, err
+		}
+
+		if note.Valid {
+			h.Note = &note.String
+		} else {
+			h.Note = nil
+		}
+
+		histories = append(histories, h)
+	}
+
+	if err := rows.Err(); err != nil {
+		return nil, err
+	}
+
+	return histories, nil
 }
