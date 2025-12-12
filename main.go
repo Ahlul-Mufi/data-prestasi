@@ -16,32 +16,38 @@ import (
 
 func main() {
     database.ConnectDB()
-    defer func() {
-        if err := database.DB.Close(); err != nil {
-            log.Printf("Error closing database connection: %v", err)
-        }
-    }()
-    
-    app := fiber.New(fiber.Config{
+    app := fiber.New(fiber.Config{ 
     })
 
     app.Use(cors.New())
     app.Use(logger.New())
 
     userRepo := repositorypostgre.NewUserRepository(database.DB)
+    roleRepo := repositorypostgre.NewRoleRepository(database.DB)
+    permissionRepo := repositorypostgre.NewPermissionRepository(database.DB)
     rolePermissionRepo := repositorypostgre.NewRolePermissionRepository(database.DB) 
     achievementReferenceRepo := repositorypostgre.NewAchievementReferenceRepository(database.DB) 
+    studentRepo := repositorypostgre.NewStudentRepository(database.DB) 
+    lecturerRepo := repositorypostgre.NewLecturerRepository(database.DB) 
 
     userService := servicepostgre.NewUserService(userRepo)
+    roleService := servicepostgre.NewRoleService(roleRepo)
+    permissionService := servicepostgre.NewPermissionService(permissionRepo)
     rolePermissionService := servicepostgre.NewRolePermissionService(rolePermissionRepo)
     achievementReferenceService := servicepostgre.NewAchievementReferenceService(achievementReferenceRepo)
+    studentService := servicepostgre.NewStudentService(studentRepo, achievementReferenceRepo) 
+    lecturerService := servicepostgre.NewLecturerService(lecturerRepo) 
 
     postgreroute.SetupRoutes(
         app, 
         userService, 
+        roleService,          
+        permissionService,
         rolePermissionService, 
-        achievementReferenceService,
-    ) 
+        achievementReferenceService, 
+        studentService,
+        lecturerService,
+    )
 
     port := os.Getenv("PORT")
     if port == "" {

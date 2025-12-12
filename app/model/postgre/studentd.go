@@ -12,20 +12,11 @@ type Student struct {
     StudentID    string     `json:"student_id"`
     ProgramStudy string     `json:"program_study"`
     AcademicYear string     `json:"academic_year"`
-    AdvisorID    uuid.UUID  `json:"advisor_id"`
+    AdvisorID    *uuid.UUID `json:"advisor_id"`
     CreatedAt    time.Time  `json:"created_at"`
+    UpdatedAt    time.Time  `json:"updated_at"`
 }
 
-type CreateStudentRequest struct {
-    UserID       uuid.UUID `json:"user_id"`
-    StudentID    string    `json:"student_id"`
-    ProgramStudy string    `json:"program_study"`
-    AcademicYear string    `json:"academic_year"`
-    AdvisorID    uuid.UUID `json:"advisor_id"`
-}
-
-type UpdateStudentRequest struct {
-    ProgramStudy string    `json:"program_study"`
-    AcademicYear string    `json:"academic_year"`
-    AdvisorID    uuid.UUID `json:"advisor_id"`
+type UpdateAdvisorRequest struct {
+    AdvisorID uuid.UUID `json:"advisor_id"`
 }

@@ -2,15 +2,16 @@ package postgreroute
 
 import (
 	servicepostgre "github.com/Ahlul-Mufi/data-prestasi/app/service/postgre"
+	mw "github.com/Ahlul-Mufi/data-prestasi/middleware/postgre"
 	"github.com/gofiber/fiber/v2"
 )
 
-func SetupRoleRoutes(app *fiber.App, roleService servicepostgre.RoleService) {
-    role := app.Group("/role")
-
-    role.Get("/", roleService.GetAll)
-    role.Get("/:id", roleService.GetByID)
-    role.Post("/", roleService.Create)
-    role.Put("/:id", roleService.Update)
-    role.Delete("/:id", roleService.Delete)
+func SetupRoleRoutes(api fiber.Router, roleService servicepostgre.RoleService) {
+	roleGroup := api.Group("/roles")
+	
+	roleGroup.Get("/", mw.AuthMiddleware(), roleService.GetAll)
+	roleGroup.Get("/:id", mw.AuthMiddleware(), roleService.GetByID)
+	roleGroup.Post("/", mw.AuthMiddleware(), roleService.Create)
+	roleGroup.Put("/:id", mw.AuthMiddleware(), roleService.Update)
+	roleGroup.Delete("/:id", mw.AuthMiddleware(), roleService.Delete)
 }
