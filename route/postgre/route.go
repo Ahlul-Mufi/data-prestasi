@@ -31,7 +31,7 @@ func SetupRoutes(
 	SetupUserRoutes(api, us, ur)
 	SetupRoleRoutes(api, rs)
 	SetupRolePermissionRoutes(api, rps)
-	SetupAchievementReferenceRoutes(api, ars)
+	SetupAchievementReferenceRoutes(api, ars, ur)
 	SetupStudentRoutes(api, ss, ur)
 	SetupLecturerRoutes(api, ls, ur)
 }

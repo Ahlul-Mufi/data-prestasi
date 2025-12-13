@@ -39,7 +39,7 @@ func (r *lecturerRepository) GetAll() ([]m.Lecturer, error) {
 	var lecturers []m.Lecturer
 	for rows.Next() {
 		var l m.Lecturer
-		err := rows.Scan(&l.ID, &l.UserID, &l.LecturerID, &l.Department, &l.CreatedAt, &l.UpdatedAt)
+		err := rows.Scan(&l.ID, &l.UserID, &l.LecturerID, &l.Department, &l.CreatedAt)
 		if err != nil {
 			return nil, err
 		}
@@ -53,7 +53,7 @@ func (r *lecturerRepository) GetByID(id uuid.UUID) (m.Lecturer, error) {
 	err := r.db.QueryRow(`
 		SELECT id, user_id, lecturer_id, department, created_at, updated_at 
 		FROM lecturers WHERE id=$1
-	`, id).Scan(&l.ID, &l.UserID, &l.LecturerID, &l.Department, &l.CreatedAt, &l.UpdatedAt)
+	`, id).Scan(&l.ID, &l.UserID, &l.LecturerID, &l.Department, &l.CreatedAt)
 
 	if errors.Is(err, sql.ErrNoRows) {
 		return m.Lecturer{}, errors.New("lecturer not found")
@@ -66,7 +66,7 @@ func (r *lecturerRepository) GetByUserID(userID uuid.UUID) (m.Lecturer, error) {
 	err := r.db.QueryRow(`
 		SELECT id, user_id, lecturer_id, department, created_at, updated_at 
 		FROM lecturers WHERE user_id=$1
-	`, userID).Scan(&l.ID, &l.UserID, &l.LecturerID, &l.Department, &l.CreatedAt, &l.UpdatedAt)
+	`, userID).Scan(&l.ID, &l.UserID, &l.LecturerID, &l.Department, &l.CreatedAt)
 
 	if errors.Is(err, sql.ErrNoRows) {
 		return m.Lecturer{}, errors.New("lecturer not found")
@@ -80,7 +80,7 @@ func (r *lecturerRepository) Create(lecturer m.Lecturer) (m.Lecturer, error) {
 		VALUES ($1, $2, $3, $4)
 		RETURNING created_at, updated_at
 	`, lecturer.ID, lecturer.UserID, lecturer.LecturerID, lecturer.Department).Scan(
-		&lecturer.CreatedAt, &lecturer.UpdatedAt,
+		&lecturer.CreatedAt,
 	)
 
 	if err != nil {
@@ -140,7 +140,7 @@ func (r *lecturerRepository) GetAdvisees(lecturerID uuid.UUID) ([]m.Student, err
 	var advisees []m.Student
 	for rows.Next() {
 		var s m.Student
-		err := rows.Scan(&s.ID, &s.UserID, &s.StudentID, &s.ProgramStudy, &s.AcademicYear, &s.AdvisorID, &s.CreatedAt, &s.UpdatedAt)
+		err := rows.Scan(&s.ID, &s.UserID, &s.StudentID, &s.ProgramStudy, &s.AcademicYear, &s.AdvisorID, &s.CreatedAt)
 		if err != nil {
 			return nil, err
 		}

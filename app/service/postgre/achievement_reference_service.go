@@ -4,11 +4,14 @@ import (
 	"errors"
 	"time"
 
+	modelmongo "github.com/Ahlul-Mufi/data-prestasi/app/model/mongo"
 	m "github.com/Ahlul-Mufi/data-prestasi/app/model/postgre"
+	repomongo "github.com/Ahlul-Mufi/data-prestasi/app/repository/mongo"
 	repo "github.com/Ahlul-Mufi/data-prestasi/app/repository/postgre"
 	helper "github.com/Ahlul-Mufi/data-prestasi/helper"
 	"github.com/gofiber/fiber/v2"
 	"github.com/google/uuid"
+	"go.mongodb.org/mongo-driver/bson/primitive"
 )
 
 type AchievementReferenceService interface {
@@ -20,6 +23,7 @@ type AchievementReferenceService interface {
 	Submit(c *fiber.Ctx) error
 
 	GetPendingAchievements(c *fiber.Ctx) error
+	GetAdviseeAchievements(c *fiber.Ctx) error
 	Verify(c *fiber.Ctx) error
 	Reject(c *fiber.Ctx) error
 
@@ -28,11 +32,24 @@ type AchievementReferenceService interface {
 }
 
 type achievementReferenceService struct {
-	repo repo.AchievementReferenceRepository
+	postgresRepo repo.AchievementReferenceRepository
+	mongoRepo    repomongo.AchievementRepository
+	studentRepo  repo.StudentRepository
+	lecturerRepo repo.LecturerRepository
 }
 
-func NewAchievementReferenceService(r repo.AchievementReferenceRepository) AchievementReferenceService {
-	return &achievementReferenceService{r}
+func NewAchievementReferenceService(
+	postgresRepo repo.AchievementReferenceRepository,
+	mongoRepo repomongo.AchievementRepository,
+	studentRepo repo.StudentRepository,
+	lecturerRepo repo.LecturerRepository,
+) AchievementReferenceService {
+	return &achievementReferenceService{
+		postgresRepo: postgresRepo,
+		mongoRepo:    mongoRepo,
+		studentRepo:  studentRepo,
+		lecturerRepo: lecturerRepo,
+	}
 }
 
 func (s *achievementReferenceService) getCallerUserID(c *fiber.Ctx) (uuid.UUID, error) {
@@ -43,29 +60,59 @@ func (s *achievementReferenceService) getCallerUserID(c *fiber.Ctx) (uuid.UUID, 
 	return uuid.Parse(userIDStr)
 }
 
+func (s *achievementReferenceService) getStudentProfile(userID uuid.UUID) (m.Student, error) {
+	student, err := s.studentRepo.GetByUserID(userID)
+	if err != nil {
+		return m.Student{}, errors.New("student profile not found")
+	}
+	return student, nil
+}
+
 func (s *achievementReferenceService) Create(c *fiber.Ctx) error {
 	userID, err := s.getCallerUserID(c)
 	if err != nil {
 		return helper.ErrorResponse(c, fiber.StatusInternalServerError, "Invalid user ID in context", err.Error())
 	}
 
-	var req m.CreateAchievementRefRequest
+	student, err := s.getStudentProfile(userID)
+	if err != nil {
+		return helper.ErrorResponse(c, fiber.StatusForbidden, "Forbidden", "Only students can create achievements")
+	}
+
+	var req modelmongo.CreateAchievementRequest
 	if err := c.BodyParser(&req); err != nil {
 		return helper.ErrorResponse(c, fiber.StatusBadRequest, "Invalid request body", err.Error())
 	}
 
-	if req.MongoAchievementID == "" {
-		return helper.ErrorResponse(c, fiber.StatusBadRequest, "Invalid request body", "MongoAchievementID is required")
+	if req.Title == "" || req.Description == "" {
+		return helper.ErrorResponse(c, fiber.StatusBadRequest, "Validation error", "Title and description are required")
+	}
+
+	achievement := modelmongo.Achievement{
+		StudentID:       student.ID.String(),
+		AchievementType: req.AchievementType,
+		Title:           req.Title,
+		Description:     req.Description,
+		Details:         req.Details,
+		Tags:            req.Tags,
+		Points:          req.Points,
+		Attachments:     []modelmongo.Attachment{},
+	}
+
+	createdAchievement, err := s.mongoRepo.Create(achievement)
+	if err != nil {
+		return helper.ErrorResponse(c, fiber.StatusInternalServerError, "Failed to create achievement in MongoDB", err.Error())
 	}
 
 	newReference := m.AchievementReference{
-		StudentID:          userID,
-		MongoAchievementID: req.MongoAchievementID,
+		StudentID:          student.ID,
+		MongoAchievementID: createdAchievement.ID.Hex(),
 		Status:             m.StatusDraft,
 	}
 
-	result, err := s.repo.Create(newReference)
+	result, err := s.postgresRepo.Create(newReference)
 	if err != nil {
+		_ = s.mongoRepo.SoftDelete(createdAchievement.ID)
 		return helper.ErrorResponse(c, fiber.StatusInternalServerError, "Failed to create achievement reference", err.Error())
 	}
 
@@ -76,9 +123,17 @@ func (s *achievementReferenceService) Create(c *fiber.Ctx) error {
 		ChangedByUserID:  userID,
 		Note:             nil,
 	}
-	_ = s.repo.CreateHistory(history)
+	_ = s.postgresRepo.CreateHistory(history)
 
-	return helper.SuccessResponse(c, fiber.StatusCreated, result)
+	response := modelmongo.AchievementWithReference{
+		Achievement: createdAchievement,
+		Status:      string(result.Status),
+		ReferenceID: result.ID,
+		CreatedAt:   result.CreatedAt,
+		UpdatedAt:   result.UpdatedAt,
+	}
+
+	return helper.SuccessResponse(c, fiber.StatusCreated, response)
 }
 
 func (s *achievementReferenceService) GetByID(c *fiber.Ctx) error {
@@ -88,7 +143,7 @@ func (s *achievementReferenceService) GetByID(c *fiber.Ctx) error {
 		return helper.ErrorResponse(c, fiber.StatusBadRequest, "Invalid ID format", err.Error())
 	}
 
-	result, err := s.repo.GetByID(refID)
+	result, err := s.postgresRepo.GetByID(refID)
 	if err != nil {
 		if errors.Is(err, errors.New("achievement reference not found")) {
 			return helper.ErrorResponse(c, fiber.StatusNotFound, "Not Found", "Achievement not found.")
@@ -96,7 +151,29 @@ func (s *achievementReferenceService) GetByID(c *fiber.Ctx) error {
 		return helper.ErrorResponse(c, fiber.StatusInternalServerError, "Failed to fetch achievement", err.Error())
 	}
 
-	return helper.SuccessResponse(c, fiber.StatusOK, result)
+	mongoID, err := primitive.ObjectIDFromHex(result.MongoAchievementID)
+	if err != nil {
+		return helper.ErrorResponse(c, fiber.StatusInternalServerError, "Invalid MongoDB ID", err.Error())
+	}
+
+	achievement, err := s.mongoRepo.GetByID(mongoID)
+	if err != nil {
+		return helper.ErrorResponse(c, fiber.StatusNotFound, "Achievement details not found in MongoDB", err.Error())
+	}
+
+	response := modelmongo.AchievementWithReference{
+		Achievement:   achievement,
+		Status:        string(result.Status),
+		SubmittedAt:   result.SubmittedAt,
+		VerifiedAt:    result.VerifiedAt,
+		VerifiedBy:    result.VerifiedBy,
+		RejectionNote: result.RejectionNote,
+		ReferenceID:   result.ID,
+		CreatedAt:     result.CreatedAt,
+		UpdatedAt:     result.UpdatedAt,
+	}
+
+	return helper.SuccessResponse(c, fiber.StatusOK, response)
 }
 
 func (s *achievementReferenceService) GetMyAchievements(c *fiber.Ctx) error {
@@ -105,11 +182,52 @@ func (s *achievementReferenceService) GetMyAchievements(c *fiber.Ctx) error {
 		return helper.ErrorResponse(c, fiber.StatusInternalServerError, "Invalid user ID in context", err.Error())
 	}
 
-	refs, err := s.repo.FindByStudentID(userID)
+	student, err := s.getStudentProfile(userID)
+	if err != nil {
+		return helper.ErrorResponse(c, fiber.StatusForbidden, "Forbidden", "Only students can view achievements")
+	}
+
+	refs, err := s.postgresRepo.FindByStudentID(student.ID)
 	if err != nil {
 		return helper.ErrorResponse(c, fiber.StatusInternalServerError, "Failed to fetch achievements", err.Error())
 	}
-	return helper.SuccessResponse(c, fiber.StatusOK, refs)
+
+	var mongoIDs []primitive.ObjectID
+	for _, ref := range refs {
+		objID, err := primitive.ObjectIDFromHex(ref.MongoAchievementID)
+		if err == nil {
+			mongoIDs = append(mongoIDs, objID)
+		}
+	}
+
+	achievements, err := s.mongoRepo.GetMultipleByIDs(mongoIDs)
+	if err != nil {
+		return helper.ErrorResponse(c, fiber.StatusInternalServerError, "Failed to fetch achievement details", err.Error())
+	}
+
+	achievementMap := make(map[string]modelmongo.Achievement)
+	for _, ach := range achievements {
+		achievementMap[ach.ID.Hex()] = ach
+	}
+
+	var results []modelmongo.AchievementWithReference
+	for _, ref := range refs {
+		if ach, exists := achievementMap[ref.MongoAchievementID]; exists {
+			results = append(results, modelmongo.AchievementWithReference{
+				Achievement:   ach,
+				Status:        string(ref.Status),
+				SubmittedAt:   ref.SubmittedAt,
+				VerifiedAt:    ref.VerifiedAt,
+				VerifiedBy:    ref.VerifiedBy,
+				RejectionNote: ref.RejectionNote,
+				ReferenceID:   ref.ID,
+				CreatedAt:     ref.CreatedAt,
+				UpdatedAt:     ref.UpdatedAt,
+			})
+		}
+	}
+
+	return helper.SuccessResponse(c, fiber.StatusOK, results)
 }
 
 func (s *achievementReferenceService) Submit(c *fiber.Ctx) error {
@@ -124,12 +242,17 @@ func (s *achievementReferenceService) Submit(c *fiber.Ctx) error {
 		return helper.ErrorResponse(c, fiber.StatusInternalServerError, "Invalid user ID in context", err.Error())
 	}
 
-	oldRef, err := s.repo.GetByID(refID)
+	oldRef, err := s.postgresRepo.GetByID(refID)
 	if err != nil {
 		return helper.ErrorResponse(c, fiber.StatusNotFound, "Not Found", "Achievement not found.")
 	}
 
-	if oldRef.StudentID != submitterID {
+	student, err := s.getStudentProfile(submitterID)
+	if err != nil {
+		return helper.ErrorResponse(c, fiber.StatusForbidden, "Forbidden", "Only students can submit")
+	}
+
+	if oldRef.StudentID != student.ID {
 		return helper.ErrorResponse(c, fiber.StatusForbidden, "Forbidden", "You are not authorized to submit this achievement.")
 	}
 
@@ -144,7 +267,7 @@ func (s *achievementReferenceService) Submit(c *fiber.Ctx) error {
 	now := time.Now()
 	updatedRef.SubmittedAt = &now
 
-	result, err := s.repo.Update(updatedRef)
+	result, err := s.postgresRepo.Update(updatedRef)
 	if err != nil {
 		return helper.ErrorResponse(c, fiber.StatusInternalServerError, "Failed to update achievement status", err.Error())
 	}
@@ -156,7 +279,7 @@ func (s *achievementReferenceService) Submit(c *fiber.Ctx) error {
 		ChangedByUserID:  submitterID,
 		Note:             nil,
 	}
-	_ = s.repo.CreateHistory(history)
+	_ = s.postgresRepo.CreateHistory(history)
 
 	return helper.SuccessResponse(c, fiber.StatusOK, result)
 }
@@ -173,69 +296,164 @@ func (s *achievementReferenceService) Update(c *fiber.Ctx) error {
 		return helper.ErrorResponse(c, fiber.StatusInternalServerError, "Invalid user ID in context", err.Error())
 	}
 
-	var req m.UpdateAchievementRefRequest
-	if err := c.BodyParser(&req); err != nil {
-		return helper.ErrorResponse(c, fiber.StatusBadRequest, "Invalid request body", err.Error())
+	student, err := s.getStudentProfile(userID)
+	if err != nil {
+		return helper.ErrorResponse(c, fiber.StatusForbidden, "Forbidden", "Only students can update")
 	}
 
-	oldRef, err := s.repo.GetByID(refID)
+	oldRef, err := s.postgresRepo.GetByID(refID)
 	if err != nil {
 		return helper.ErrorResponse(c, fiber.StatusNotFound, "Not Found", "Achievement not found.")
 	}
 
-	if oldRef.StudentID != userID {
+	if oldRef.StudentID != student.ID {
 		return helper.ErrorResponse(c, fiber.StatusForbidden, "Forbidden", "You are not authorized to update this achievement.")
 	}
 
-	if oldRef.Status == m.StatusVerified {
-		return helper.ErrorResponse(c, fiber.StatusForbidden, "Forbidden", "Cannot update a verified achievement.")
+	if oldRef.Status != m.StatusDraft && oldRef.Status != m.StatusRejected {
+		return helper.ErrorResponse(c, fiber.StatusConflict, "Update Failed", "Only draft or rejected achievements can be updated.")
 	}
 
-	oldStatus := oldRef.Status
-	updatedRef := oldRef
-
-	if req.MongoAchievementID != nil && *req.MongoAchievementID != "" {
-		updatedRef.MongoAchievementID = *req.MongoAchievementID
-		if oldRef.Status != m.StatusDraft {
-			updatedRef.Status = m.StatusDraft
-			updatedRef.SubmittedAt = nil
-		}
+	var req modelmongo.UpdateAchievementRequest
+	if err := c.BodyParser(&req); err != nil {
+		return helper.ErrorResponse(c, fiber.StatusBadRequest, "Invalid request body", err.Error())
 	}
 
-	if req.Status != "" {
-		if req.Status == m.StatusDraft {
-			updatedRef.Status = m.StatusDraft
-			updatedRef.SubmittedAt = nil
-		} else if req.Status != oldStatus {
-			return helper.ErrorResponse(c, fiber.StatusBadRequest, "Invalid Status", "Only 'draft' status change is allowed for student update (or use /submit).")
-		}
-	}
-
-	result, err := s.repo.Update(updatedRef)
+	mongoID, _ := primitive.ObjectIDFromHex(oldRef.MongoAchievementID)
+	existing, err := s.mongoRepo.GetByID(mongoID)
 	if err != nil {
-		return helper.ErrorResponse(c, fiber.StatusInternalServerError, "Failed to update achievement reference", err.Error())
+		return helper.ErrorResponse(c, fiber.StatusNotFound, "Achievement details not found", err.Error())
 	}
 
-	if oldStatus != updatedRef.Status {
-		history := m.AchievementHistory{
-			AchievementRefID: result.ID,
-			PreviousStatus:   oldStatus,
-			NewStatus:        updatedRef.Status,
-			ChangedByUserID:  userID,
-			Note:             nil,
-		}
-		_ = s.repo.CreateHistory(history)
+	if req.AchievementType != nil {
+		existing.AchievementType = *req.AchievementType
+	}
+	if req.Title != nil {
+		existing.Title = *req.Title
+	}
+	if req.Description != nil {
+		existing.Description = *req.Description
+	}
+	if req.Details != nil {
+		existing.Details = *req.Details
+	}
+	if req.Tags != nil {
+		existing.Tags = req.Tags
+	}
+	if req.Points != nil {
+		existing.Points = *req.Points
 	}
 
-	return helper.SuccessResponse(c, fiber.StatusOK, result)
+	updated, err := s.mongoRepo.Update(mongoID, existing)
+	if err != nil {
+		return helper.ErrorResponse(c, fiber.StatusInternalServerError, "Failed to update achievement", err.Error())
+	}
+
+	if oldRef.Status == m.StatusRejected {
+		oldRef.Status = m.StatusDraft
+		oldRef.SubmittedAt = nil
+		_, _ = s.postgresRepo.Update(oldRef)
+	}
+
+	response := modelmongo.AchievementWithReference{
+		Achievement: updated,
+		Status:      string(oldRef.Status),
+		ReferenceID: oldRef.ID,
+		CreatedAt:   oldRef.CreatedAt,
+		UpdatedAt:   oldRef.UpdatedAt,
+	}
+
+	return helper.SuccessResponse(c, fiber.StatusOK, response)
 }
 
 func (s *achievementReferenceService) Delete(c *fiber.Ctx) error {
-	return errors.New("not implemented yet")
+	idStr := c.Params("id")
+	refID, err := uuid.Parse(idStr)
+	if err != nil {
+		return helper.ErrorResponse(c, fiber.StatusBadRequest, "Invalid ID format", err.Error())
+	}
+
+	userID, err := s.getCallerUserID(c)
+	if err != nil {
+		return helper.ErrorResponse(c, fiber.StatusInternalServerError, "Invalid user ID", err.Error())
+	}
+
+	student, err := s.getStudentProfile(userID)
+	if err != nil {
+		return helper.ErrorResponse(c, fiber.StatusForbidden, "Forbidden", "Only students can delete")
+	}
+
+	oldRef, err := s.postgresRepo.GetByID(refID)
+	if err != nil {
+		return helper.ErrorResponse(c, fiber.StatusNotFound, "Not Found", "Achievement not found")
+	}
+
+	if oldRef.StudentID != student.ID {
+		return helper.ErrorResponse(c, fiber.StatusForbidden, "Forbidden", "You can only delete your own achievements")
+	}
+
+	if oldRef.Status != m.StatusDraft {
+		return helper.ErrorResponse(c, fiber.StatusConflict, "Cannot delete", "Only draft achievements can be deleted")
+	}
+
+	mongoID, _ := primitive.ObjectIDFromHex(oldRef.MongoAchievementID)
+	if err := s.mongoRepo.SoftDelete(mongoID); err != nil {
+		return helper.ErrorResponse(c, fiber.StatusInternalServerError, "Failed to delete from MongoDB", err.Error())
+	}
+
+	if err := s.postgresRepo.Delete(refID); err != nil {
+		return helper.ErrorResponse(c, fiber.StatusInternalServerError, "Failed to delete reference", err.Error())
+	}
+
+	return helper.SuccessResponse(c, fiber.StatusOK, fiber.Map{
+		"message": "Achievement deleted successfully",
+	})
 }
 
 func (s *achievementReferenceService) GetPendingAchievements(c *fiber.Ctx) error {
-	return errors.New("not implemented yet")
+	status := m.StatusSubmitted
+	refs, err := s.postgresRepo.GetFiltered(nil, &status)
+	if err != nil {
+		return helper.ErrorResponse(c, fiber.StatusInternalServerError, "Failed to fetch pending achievements", err.Error())
+	}
+
+	var mongoIDs []primitive.ObjectID
+	for _, ref := range refs {
+		objID, err := primitive.ObjectIDFromHex(ref.MongoAchievementID)
+		if err == nil {
+			mongoIDs = append(mongoIDs, objID)
+		}
+	}
+
+	achievements, err := s.mongoRepo.GetMultipleByIDs(mongoIDs)
+	if err != nil {
+		return helper.ErrorResponse(c, fiber.StatusInternalServerError, "Failed to fetch details", err.Error())
+	}
+
+	achievementMap := make(map[string]modelmongo.Achievement)
+	for _, ach := range achievements {
+		achievementMap[ach.ID.Hex()] = ach
+	}
+
+	var results []modelmongo.AchievementWithReference
+	for _, ref := range refs {
+		if ach, exists := achievementMap[ref.MongoAchievementID]; exists {
+			results = append(results, modelmongo.AchievementWithReference{
+				Achievement: ach,
+				Status:      string(ref.Status),
+				SubmittedAt: ref.SubmittedAt,
+				ReferenceID: ref.ID,
+				CreatedAt:   ref.CreatedAt,
+				UpdatedAt:   ref.UpdatedAt,
+			})
+		}
+	}
+
+	return helper.SuccessResponse(c, fiber.StatusOK, results)
+}
+
+func (s *achievementReferenceService) GetAdviseeAchievements(c *fiber.Ctx) error {
+	return helper.ErrorResponse(c, fiber.StatusNotImplemented, "Not implemented", "Under development")
 }
 
 func (s *achievementReferenceService) Verify(c *fiber.Ctx) error {
@@ -250,13 +468,13 @@ func (s *achievementReferenceService) Verify(c *fiber.Ctx) error {
 		return helper.ErrorResponse(c, fiber.StatusInternalServerError, "Invalid verifier ID in context", err.Error())
 	}
 
-	oldRef, err := s.repo.GetByID(refID)
+	oldRef, err := s.postgresRepo.GetByID(refID)
 	if err != nil {
 		return helper.ErrorResponse(c, fiber.StatusNotFound, "Not Found", "Achievement not found.")
 	}
 	oldStatus := oldRef.Status
 
-	result, err := s.repo.UpdateStatus(refID, verifierID, m.StatusVerified, nil)
+	result, err := s.postgresRepo.UpdateStatus(refID, verifierID, m.StatusVerified, nil)
 	if err != nil {
 		if errors.Is(err, errors.New("achievement not found or already processed")) {
 			return helper.ErrorResponse(c, fiber.StatusConflict, "Verification Failed", "Achievement not found, or its status is not 'submitted'.")
@@ -271,7 +489,7 @@ func (s *achievementReferenceService) Verify(c *fiber.Ctx) error {
 		ChangedByUserID:  verifierID,
 		Note:             nil,
 	}
-	_ = s.repo.CreateHistory(history)
+	_ = s.postgresRepo.CreateHistory(history)
 
 	return helper.SuccessResponse(c, fiber.StatusOK, result)
 }
@@ -288,7 +506,7 @@ func (s *achievementReferenceService) Reject(c *fiber.Ctx) error {
 		return helper.ErrorResponse(c, fiber.StatusInternalServerError, "Invalid verifier ID in context", err.Error())
 	}
 
-	oldRef, err := s.repo.GetByID(refID)
+	oldRef, err := s.postgresRepo.GetByID(refID)
 	if err != nil {
 		return helper.ErrorResponse(c, fiber.StatusNotFound, "Not Found", "Achievement not found.")
 	}
@@ -303,7 +521,7 @@ func (s *achievementReferenceService) Reject(c *fiber.Ctx) error {
 		return helper.ErrorResponse(c, fiber.StatusBadRequest, "Missing Rejection Note", "Rejection Note must be provided when rejecting an achievement.")
 	}
 
-	result, err := s.repo.UpdateStatus(refID, verifierID, m.StatusRejected, req.RejectionNote)
+	result, err := s.postgresRepo.UpdateStatus(refID, verifierID, m.StatusRejected, req.RejectionNote)
 	if err != nil {
 		if errors.Is(err, errors.New("achievement not found or already processed")) {
 			return helper.ErrorResponse(c, fiber.StatusConflict, "Rejection Failed", "Achievement not found, or its status is not 'submitted'.")
@@ -318,13 +536,61 @@ func (s *achievementReferenceService) Reject(c *fiber.Ctx) error {
 		ChangedByUserID:  verifierID,
 		Note:             req.RejectionNote,
 	}
-	_ = s.repo.CreateHistory(history)
+	_ = s.postgresRepo.CreateHistory(history)
 
 	return helper.SuccessResponse(c, fiber.StatusOK, result)
 }
 
 func (s *achievementReferenceService) GetAllAchievements(c *fiber.Ctx) error {
-	return errors.New("not implemented yet")
+	statusQuery := c.Query("status")
+
+	var statusFilter *m.AchievementStatus
+	if statusQuery != "" {
+		s := m.AchievementStatus(statusQuery)
+		statusFilter = &s
+	}
+
+	refs, err := s.postgresRepo.GetFiltered(nil, statusFilter)
+	if err != nil {
+		return helper.ErrorResponse(c, fiber.StatusInternalServerError, "Failed to fetch achievements", err.Error())
+	}
+
+	var mongoIDs []primitive.ObjectID
+	for _, ref := range refs {
+		objID, err := primitive.ObjectIDFromHex(ref.MongoAchievementID)
+		if err == nil {
+			mongoIDs = append(mongoIDs, objID)
+		}
+	}
+
+	achievements, err := s.mongoRepo.GetMultipleByIDs(mongoIDs)
+	if err != nil {
+		return helper.ErrorResponse(c, fiber.StatusInternalServerError, "Failed to fetch details", err.Error())
+	}
+
+	achievementMap := make(map[string]modelmongo.Achievement)
+	for _, ach := range achievements {
+		achievementMap[ach.ID.Hex()] = ach
+	}
+
+	var results []modelmongo.AchievementWithReference
+	for _, ref := range refs {
+		if ach, exists := achievementMap[ref.MongoAchievementID]; exists {
+			results = append(results, modelmongo.AchievementWithReference{
+				Achievement:   ach,
+				Status:        string(ref.Status),
+				SubmittedAt:   ref.SubmittedAt,
+				VerifiedAt:    ref.VerifiedAt,
+				VerifiedBy:    ref.VerifiedBy,
+				RejectionNote: ref.RejectionNote,
+				ReferenceID:   ref.ID,
+				CreatedAt:     ref.CreatedAt,
+				UpdatedAt:     ref.UpdatedAt,
+			})
+		}
+	}
+
+	return helper.SuccessResponse(c, fiber.StatusOK, results)
 }
 
 func (s *achievementReferenceService) GetHistory(c *fiber.Ctx) error {
@@ -334,7 +600,7 @@ func (s *achievementReferenceService) GetHistory(c *fiber.Ctx) error {
 		return helper.ErrorResponse(c, fiber.StatusBadRequest, "Invalid ID format", err.Error())
 	}
 
-	_, err = s.repo.GetByID(refID)
+	_, err = s.postgresRepo.GetByID(refID)
 	if err != nil {
 		if errors.Is(err, errors.New("achievement reference not found")) {
 			return helper.ErrorResponse(c, fiber.StatusNotFound, "Not Found", "Achievement not found.")
@@ -342,7 +608,7 @@ func (s *achievementReferenceService) GetHistory(c *fiber.Ctx) error {
 		return helper.ErrorResponse(c, fiber.StatusInternalServerError, "Failed to fetch achievement reference", err.Error())
 	}
 
-	histories, err := s.repo.FindHistoryByAchievementRefID(refID)
+	histories, err := s.postgresRepo.FindHistoryByAchievementRefID(refID)
 	if err != nil {
 		return helper.ErrorResponse(c, fiber.StatusInternalServerError, "Failed to fetch achievement history", err.Error())
 	}

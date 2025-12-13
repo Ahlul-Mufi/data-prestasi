@@ -28,7 +28,7 @@ func NewStudentRepository(db *sql.DB) StudentRepository {
 
 func (r *studentRepository) GetAll() ([]m.Student, error) {
 	rows, err := r.db.Query(`
-		SELECT id, user_id, student_id, program_study, academic_year, advisor_id, created_at, updated_at 
+		SELECT id, user_id, student_id, program_study, academic_year, advisor_id, created_at
 		FROM students
 	`)
 	if err != nil {
@@ -41,7 +41,7 @@ func (r *studentRepository) GetAll() ([]m.Student, error) {
 		var s m.Student
 		var advisorID sql.NullString
 
-		err := rows.Scan(&s.ID, &s.UserID, &s.StudentID, &s.ProgramStudy, &s.AcademicYear, &advisorID, &s.CreatedAt, &s.UpdatedAt)
+		err := rows.Scan(&s.ID, &s.UserID, &s.StudentID, &s.ProgramStudy, &s.AcademicYear, &advisorID, &s.CreatedAt)
 		if err != nil {
 			return nil, err
 		}
@@ -63,9 +63,9 @@ func (r *studentRepository) GetByID(id uuid.UUID) (m.Student, error) {
 	var advisorID sql.NullString
 
 	err := r.db.QueryRow(`
-		SELECT id, user_id, student_id, program_study, academic_year, advisor_id, created_at, updated_at
+		SELECT id, user_id, student_id, program_study, academic_year, advisor_id, created_at
 		FROM students WHERE id=$1
-	`, id).Scan(&s.ID, &s.UserID, &s.StudentID, &s.ProgramStudy, &s.AcademicYear, &advisorID, &s.CreatedAt, &s.UpdatedAt)
+	`, id).Scan(&s.ID, &s.UserID, &s.StudentID, &s.ProgramStudy, &s.AcademicYear, &advisorID, &s.CreatedAt)
 
 	if errors.Is(err, sql.ErrNoRows) {
 		return m.Student{}, errors.New("student not found")
@@ -89,9 +89,9 @@ func (r *studentRepository) GetByUserID(userID uuid.UUID) (m.Student, error) {
 	var advisorID sql.NullString
 
 	err := r.db.QueryRow(`
-		SELECT id, user_id, student_id, program_study, academic_year, advisor_id, created_at, updated_at
+		SELECT id, user_id, student_id, program_study, academic_year, advisor_id, created_at
 		FROM students WHERE user_id=$1
-	`, userID).Scan(&s.ID, &s.UserID, &s.StudentID, &s.ProgramStudy, &s.AcademicYear, &advisorID, &s.CreatedAt, &s.UpdatedAt)
+	`, userID).Scan(&s.ID, &s.UserID, &s.StudentID, &s.ProgramStudy, &s.AcademicYear, &advisorID, &s.CreatedAt)
 
 	if errors.Is(err, sql.ErrNoRows) {
 		return m.Student{}, errors.New("student not found")
@@ -112,9 +112,9 @@ func (r *studentRepository) Create(student m.Student) (m.Student, error) {
 	err := r.db.QueryRow(`
 		INSERT INTO students (id, user_id, student_id, program_study, academic_year, advisor_id)
 		VALUES ($1, $2, $3, $4, $5, $6)
-		RETURNING created_at, updated_at
+		RETURNING created_at
 	`, student.ID, student.UserID, student.StudentID, student.ProgramStudy, student.AcademicYear, student.AdvisorID).Scan(
-		&student.CreatedAt, &student.UpdatedAt,
+		&student.CreatedAt,
 	)
 
 	if err != nil {
@@ -127,7 +127,7 @@ func (r *studentRepository) Create(student m.Student) (m.Student, error) {
 func (r *studentRepository) Update(student m.Student) (m.Student, error) {
 	result, err := r.db.Exec(`
 		UPDATE students 
-		SET student_id=$2, program_study=$3, academic_year=$4, advisor_id=$5, updated_at=NOW()
+		SET student_id=$2, program_study=$3, academic_year=$4, advisor_id=$5,
 		WHERE id=$1
 	`, student.ID, student.StudentID, student.ProgramStudy, student.AcademicYear, student.AdvisorID)
 
@@ -162,7 +162,7 @@ func (r *studentRepository) Delete(id uuid.UUID) error {
 
 func (r *studentRepository) UpdateAdvisor(id, advisorID uuid.UUID) error {
 	result, err := r.db.Exec(`
-		UPDATE students SET advisor_id = $2, updated_at = NOW() 
+		UPDATE students SET advisor_id = $2
 		WHERE id = $1
 	`, id, advisorID)
 

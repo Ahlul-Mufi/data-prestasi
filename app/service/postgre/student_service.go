@@ -130,7 +130,6 @@ func (s *studentService) UpdateStudent(c *fiber.Ctx) error {
 		return helper.ErrorResponse(c, fiber.StatusInternalServerError, "Failed to fetch student", err.Error())
 	}
 
-	// Update only provided fields
 	if req.StudentID != "" {
 		existingStudent.StudentID = req.StudentID
 	}
@@ -141,7 +140,6 @@ func (s *studentService) UpdateStudent(c *fiber.Ctx) error {
 		existingStudent.AcademicYear = req.AcademicYear
 	}
 	if req.AdvisorID != nil {
-		// Verify advisor exists
 		_, err := s.lecRepo.GetByID(*req.AdvisorID)
 		if err != nil {
 			return helper.ErrorResponse(c, fiber.StatusBadRequest, "Advisor (Lecturer) not found", "")

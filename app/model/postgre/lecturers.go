@@ -12,7 +12,6 @@ type Lecturer struct {
 	LecturerID string    `json:"lecturer_id"`
 	Department string    `json:"department"`
 	CreatedAt  time.Time `json:"created_at"`
-	UpdatedAt  time.Time `json:"updated_at"`
 }
 
 type CreateLecturerRequest struct {
