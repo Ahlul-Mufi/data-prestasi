@@ -16,6 +16,7 @@ func SetupRoutes(
 	achievementReferenceService interface{},
 	studentService interface{},
 	lecturerService interface{},
+	statisticsService interface{},
 ) {
 	api := app.Group("/api/v1")
 
@@ -26,6 +27,7 @@ func SetupRoutes(
 	ars := achievementReferenceService.(servicepostgre.AchievementReferenceService)
 	ss := studentService.(servicepostgre.StudentService)
 	ls := lecturerService.(servicepostgre.LecturerService)
+	sts := statisticsService.(servicepostgre.StatisticsService)
 
 	SetupAuthRoutes(api, us)
 	SetupUserRoutes(api, us, ur)
@@ -34,4 +36,5 @@ func SetupRoutes(
 	SetupAchievementReferenceRoutes(api, ars, ur)
 	SetupStudentRoutes(api, ss, ur)
 	SetupLecturerRoutes(api, ls, ur)
+	SetupStatisticsRoutes(api, sts)
 }

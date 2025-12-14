@@ -36,6 +36,7 @@ func main() {
 	achievementReferenceRepo := repositorypostgre.NewAchievementReferenceRepository(database.DB)
 	studentRepo := repositorypostgre.NewStudentRepository(database.DB)
 	lecturerRepo := repositorypostgre.NewLecturerRepository(database.DB)
+	statisticsRepo := repositorypostgre.NewStatisticsRepository(database.DB)
 
 	achievementMongoRepo := repomongo.NewAchievementRepository()
 
@@ -54,6 +55,12 @@ func main() {
 	studentService := servicepostgre.NewStudentService(studentRepo, achievementReferenceRepo, userRepo, lecturerRepo)
 	lecturerService := servicepostgre.NewLecturerService(lecturerRepo, userRepo)
 
+	statisticsService := servicepostgre.NewStatisticsService(
+		statisticsRepo,
+		achievementMongoRepo,
+		userRepo,
+	)
+
 	postgreroute.SetupRoutes(
 		app,
 		userService,
@@ -64,6 +71,7 @@ func main() {
 		achievementReferenceService,
 		studentService,
 		lecturerService,
+		statisticsService,
 	)
 
 	port := os.Getenv("PORT")
