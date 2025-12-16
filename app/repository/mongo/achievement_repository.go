@@ -75,7 +75,6 @@ func (r *achievementRepository) GetByID(id primitive.ObjectID) (m.Achievement, e
 	return achievement, nil
 }
 
-// GetByStudentID retrieves all achievements for a student
 func (r *achievementRepository) GetByStudentID(studentID string) ([]m.Achievement, error) {
 	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
 	defer cancel()
@@ -101,7 +100,6 @@ func (r *achievementRepository) GetByStudentID(studentID string) ([]m.Achievemen
 	return achievements, nil
 }
 
-// GetMultipleByIDs retrieves multiple achievements by their IDs
 func (r *achievementRepository) GetMultipleByIDs(ids []primitive.ObjectID) ([]m.Achievement, error) {
 	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
 	defer cancel()
@@ -129,12 +127,10 @@ func (r *achievementRepository) GetMultipleByIDs(ids []primitive.ObjectID) ([]m.
 	return achievements, nil
 }
 
-// Update updates an existing achievement
 func (r *achievementRepository) Update(id primitive.ObjectID, achievement m.Achievement) (m.Achievement, error) {
 	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
 	defer cancel()
 
-	// Update timestamp
 	achievement.UpdatedAt = time.Now()
 
 	filter := bson.M{
@@ -142,7 +138,6 @@ func (r *achievementRepository) Update(id primitive.ObjectID, achievement m.Achi
 		"isDeleted": false,
 	}
 
-	// Prepare update document
 	update := bson.M{
 		"$set": bson.M{
 			"achievementType": achievement.AchievementType,
@@ -155,7 +150,6 @@ func (r *achievementRepository) Update(id primitive.ObjectID, achievement m.Achi
 		},
 	}
 
-	// Find and update
 	opts := options.FindOneAndUpdate().SetReturnDocument(options.After)
 	var updated m.Achievement
 
@@ -170,7 +164,6 @@ func (r *achievementRepository) Update(id primitive.ObjectID, achievement m.Achi
 	return updated, nil
 }
 
-// SoftDelete marks achievement as deleted (soft delete)
 func (r *achievementRepository) SoftDelete(id primitive.ObjectID) error {
 	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
 	defer cancel()
@@ -199,24 +192,20 @@ func (r *achievementRepository) SoftDelete(id primitive.ObjectID) error {
 	return nil
 }
 
-// GetAll retrieves achievements with pagination and filtering
 func (r *achievementRepository) GetAll(filter bson.M, skip, limit int64) ([]m.Achievement, int64, error) {
 	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
 	defer cancel()
 
-	// Add isDeleted filter
 	if filter == nil {
 		filter = bson.M{}
 	}
 	filter["isDeleted"] = false
 
-	// Count total documents
 	total, err := r.collection.CountDocuments(ctx, filter)
 	if err != nil {
 		return nil, 0, err
 	}
 
-	// Find with pagination
 	opts := options.Find().
 		SetSort(bson.D{{Key: "createdAt", Value: -1}}).
 		SetSkip(skip).
@@ -236,7 +225,6 @@ func (r *achievementRepository) GetAll(filter bson.M, skip, limit int64) ([]m.Ac
 	return achievements, total, nil
 }
 
-// AddAttachment adds an attachment to an achievement
 func (r *achievementRepository) AddAttachment(id primitive.ObjectID, attachment m.Attachment) error {
 	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
 	defer cancel()

@@ -2,6 +2,7 @@ package servicepostgre
 
 import (
 	"errors"
+	"strings"
 	"time"
 
 	modelmongo "github.com/Ahlul-Mufi/data-prestasi/app/model/mongo"
@@ -145,7 +146,7 @@ func (s *achievementReferenceService) GetByID(c *fiber.Ctx) error {
 
 	result, err := s.postgresRepo.GetByID(refID)
 	if err != nil {
-		if errors.Is(err, errors.New("achievement reference not found")) {
+		if strings.Contains(err.Error(), "not found") {
 			return helper.ErrorResponse(c, fiber.StatusNotFound, "Not Found", "Achievement not found.")
 		}
 		return helper.ErrorResponse(c, fiber.StatusInternalServerError, "Failed to fetch achievement", err.Error())
