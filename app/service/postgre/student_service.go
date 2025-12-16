@@ -31,6 +31,14 @@ func NewStudentService(r repo.StudentRepository, arRepo repo.AchievementReferenc
 	return &studentService{r, arRepo, userRepo, lecRepo}
 }
 
+// @Summary Ambil semua Mahasiswa
+// @Description Mengambil daftar semua profil mahasiswa.
+// @Tags Students
+// @Security ApiKeyAuth
+// @Produce json
+// @Success 200 {array} modelpostgre.Student "Daftar mahasiswa"
+// @Failure 500 {object} map[string]interface{} "Gagal mengambil data mahasiswa"
+// @Router /api/v1/students [get]
 func (s *studentService) GetAll(c *fiber.Ctx) error {
 	students, err := s.repo.GetAll()
 	if err != nil {
@@ -39,6 +47,17 @@ func (s *studentService) GetAll(c *fiber.Ctx) error {
 	return helper.SuccessResponse(c, fiber.StatusOK, students)
 }
 
+// @Summary Ambil Mahasiswa berdasarkan ID
+// @Description Mengambil detail profil mahasiswa berdasarkan ID (UUID).
+// @Tags Students
+// @Security ApiKeyAuth
+// @Produce json
+// @Param id path string true "ID Pengguna Mahasiswa (UUID)"
+// @Success 200 {object} modelpostgre.Student "Mahasiswa ditemukan"
+// @Failure 400 {object} map[string]interface{} "Format ID tidak valid"
+// @Failure 404 {object} map[string]interface{} "Mahasiswa tidak ditemukan"
+// @Failure 500 {object} map[string]interface{} "Gagal mengambil data mahasiswa"
+// @Router /api/v1/students/{id} [get]
 func (s *studentService) GetByID(c *fiber.Ctx) error {
 	id, err := uuid.Parse(c.Params("id"))
 	if err != nil {
@@ -55,6 +74,17 @@ func (s *studentService) GetByID(c *fiber.Ctx) error {
 	return helper.SuccessResponse(c, fiber.StatusOK, student)
 }
 
+// @Summary Ambil Prestasi Mahasiswa
+// @Description Mengambil daftar semua prestasi (Achievement References) yang dimiliki oleh mahasiswa tertentu.
+// @Tags Students
+// @Security ApiKeyAuth
+// @Produce json
+// @Param id path string true "ID Pengguna Mahasiswa (UUID)"
+// @Success 200 {array} modelpostgre.AchievementReference "Daftar prestasi mahasiswa"
+// @Failure 400 {object} map[string]interface{} "Format ID tidak valid"
+// @Failure 404 {object} map[string]interface{} "Mahasiswa tidak ditemukan"
+// @Failure 500 {object} map[string]interface{} "Gagal mengambil prestasi"
+// @Router /api/v1/students/{id}/achievements [get]
 func (s *studentService) GetAchievements(c *fiber.Ctx) error {
 	id, err := uuid.Parse(c.Params("id"))
 	if err != nil {
@@ -76,6 +106,18 @@ func (s *studentService) GetAchievements(c *fiber.Ctx) error {
 	return helper.SuccessResponse(c, fiber.StatusOK, achievements)
 }
 
+// @Summary Buat profil Mahasiswa baru
+// @Description Membuat profil mahasiswa baru (Membutuhkan User ID yang sudah ada).
+// @Tags Students
+// @Security ApiKeyAuth
+// @Accept json
+// @Produce json
+// @Param createStudentRequest body m.CreateStudentRequest true "Detail Mahasiswa Baru"
+// @Success 201 {object} modelpostgre.Student "Mahasiswa berhasil dibuat"
+// @Failure 400 {object} map[string]interface{} "Body request tidak valid / User ID tidak ditemukan"
+// @Failure 409 {object} map[string]interface{} "Mahasiswa sudah ada (Duplicate Entry)"
+// @Failure 500 {object} map[string]interface{} "Gagal membuat profil mahasiswa"
+// @Router /api/v1/students [post]
 func (s *studentService) CreateStudent(c *fiber.Ctx) error {
 	var req m.CreateStudentRequest
 	if err := c.BodyParser(&req); err != nil {
@@ -111,6 +153,19 @@ func (s *studentService) CreateStudent(c *fiber.Ctx) error {
 	return helper.SuccessResponse(c, fiber.StatusCreated, createdStudent)
 }
 
+// @Summary Perbarui profil Mahasiswa
+// @Description Memperbarui detail profil mahasiswa (NIM, Program Studi, Tahun Akademik).
+// @Tags Students
+// @Security ApiKeyAuth
+// @Accept json
+// @Produce json
+// @Param id path string true "ID Pengguna Mahasiswa (UUID)"
+// @Param updateStudentRequest body m.UpdateStudentRequest true "Detail Mahasiswa yang diperbarui"
+// @Success 200 {object} modelpostgre.Student "Profil mahasiswa berhasil diperbarui"
+// @Failure 400 {object} map[string]interface{} "Format ID tidak valid / Body request tidak valid"
+// @Failure 404 {object} map[string]interface{} "Mahasiswa tidak ditemukan"
+// @Failure 500 {object} map[string]interface{} "Gagal memperbarui profil mahasiswa"
+// @Router /api/v1/students/{id} [put]
 func (s *studentService) UpdateStudent(c *fiber.Ctx) error {
 	id, err := uuid.Parse(c.Params("id"))
 	if err != nil {
@@ -155,6 +210,17 @@ func (s *studentService) UpdateStudent(c *fiber.Ctx) error {
 	return helper.SuccessResponse(c, fiber.StatusOK, updatedStudent)
 }
 
+// @Summary Hapus profil Mahasiswa
+// @Description Menghapus profil mahasiswa berdasarkan ID (UUID).
+// @Tags Students
+// @Security ApiKeyAuth
+// @Produce json
+// @Param id path string true "ID Pengguna Mahasiswa (UUID)"
+// @Success 200 {object} modelpostgre.Student "Profil mahasiswa berhasil dihapus"
+// @Failure 400 {object} map[string]interface{} "Format ID tidak valid"
+// @Failure 404 {object} map[string]interface{} "Mahasiswa tidak ditemukan"
+// @Failure 500 {object} map[string]interface{} "Gagal menghapus profil mahasiswa"
+// @Router /api/v1/students/{id} [delete]
 func (s *studentService) DeleteStudent(c *fiber.Ctx) error {
 	id, err := uuid.Parse(c.Params("id"))
 	if err != nil {
@@ -172,6 +238,19 @@ func (s *studentService) DeleteStudent(c *fiber.Ctx) error {
 	return helper.SuccessResponse(c, fiber.StatusOK, fiber.Map{"message": "Student profile deleted successfully"})
 }
 
+// @Summary Perbarui Dosen Pembimbing Mahasiswa
+// @Description Memperbarui Dosen Pembimbing (Advisor) untuk mahasiswa tertentu.
+// @Tags Students
+// @Security ApiKeyAuth
+// @Accept json
+// @Produce json
+// @Param id path string true "ID Pengguna Mahasiswa (UUID)"
+// @Param updateAdvisorRequest body m.UpdateAdvisorRequest true "ID Dosen Pembimbing (Advisor ID)"
+// @Success 200 {object} modelpostgre.Student "Dosen Pembimbing berhasil diperbarui"
+// @Failure 400 {object} map[string]interface{} "Format ID tidak valid / Body request tidak valid"
+// @Failure 404 {object} map[string]interface{} "Mahasiswa atau Dosen Pembimbing tidak ditemukan"
+// @Failure 500 {object} map[string]interface{} "Gagal memperbarui Dosen Pembimbing"
+// @Router /api/v1/students/{id}/advisor [patch]
 func (s *studentService) UpdateAdvisor(c *fiber.Ctx) error {
 	studentID, err := uuid.Parse(c.Params("id"))
 	if err != nil {

@@ -1,0 +1,2268 @@
+basePath: /
+definitions:
+  modelmongo.Achievement:
+    properties:
+      achievementType:
+        $ref: '#/definitions/modelmongo.AchievementType'
+      attachments:
+        items:
+          $ref: '#/definitions/modelmongo.Attachment'
+        type: array
+      createdAt:
+        type: string
+      description:
+        type: string
+      details:
+        $ref: '#/definitions/modelmongo.AchievementDetails'
+      id:
+        type: string
+      isDeleted:
+        type: boolean
+      points:
+        type: integer
+      studentID:
+        type: string
+      tags:
+        items:
+          type: string
+        type: array
+      title:
+        type: string
+      updatedAt:
+        type: string
+    type: object
+  modelmongo.AchievementDetails:
+    properties:
+      authors:
+        items:
+          type: string
+        type: array
+      certificationName:
+        type: string
+      certificationNumber:
+        type: string
+      competitionLevel:
+        $ref: '#/definitions/modelmongo.CompetitionLevel'
+      competitionName:
+        type: string
+      customFields:
+        additionalProperties: true
+        type: object
+      eventDate:
+        type: string
+      issn:
+        type: string
+      issuedBy:
+        type: string
+      location:
+        type: string
+      medalType:
+        type: string
+      organizationName:
+        type: string
+      organizer:
+        type: string
+      period:
+        $ref: '#/definitions/modelmongo.Period'
+      position:
+        type: string
+      publicationTitle:
+        type: string
+      publicationType:
+        $ref: '#/definitions/modelmongo.PublicationType'
+      publisher:
+        type: string
+      rank:
+        type: integer
+      score:
+        type: number
+      validUntil:
+        type: string
+    type: object
+  modelmongo.AchievementType:
+    enum:
+    - academic
+    - competition
+    - organization
+    - publication
+    - certification
+    - other
+    type: string
+    x-enum-varnames:
+    - TypeAcademic
+    - TypeCompetition
+    - TypeOrganization
+    - TypePublication
+    - TypeCertification
+    - TypeOther
+  modelmongo.AchievementWithReference:
+    properties:
+      achievement:
+        $ref: '#/definitions/modelmongo.Achievement'
+      created_at:
+        type: string
+      reference_id:
+        type: string
+      rejection_note:
+        type: string
+      status:
+        type: string
+      submitted_at:
+        type: string
+      updated_at:
+        type: string
+      verified_at:
+        type: string
+      verified_by:
+        type: string
+    type: object
+  modelmongo.Attachment:
+    properties:
+      fileName:
+        type: string
+      fileSize:
+        type: integer
+      fileType:
+        type: string
+      fileURL:
+        type: string
+      uploadedAt:
+        type: string
+    type: object
+  modelmongo.CompetitionLevel:
+    enum:
+    - international
+    - national
+    - regional
+    - local
+    type: string
+    x-enum-varnames:
+    - LevelInternational
+    - LevelNational
+    - LevelRegional
+    - LevelLocal
+  modelmongo.Period:
+    properties:
+      end:
+        type: string
+      start:
+        type: string
+    type: object
+  modelmongo.PublicationType:
+    enum:
+    - journal
+    - conference
+    - book
+    type: string
+    x-enum-varnames:
+    - PubJournal
+    - PubConference
+    - PubBook
+  modelmongo.UpdateAchievementRequest:
+    properties:
+      achievement_type:
+        $ref: '#/definitions/modelmongo.AchievementType'
+      description:
+        type: string
+      details:
+        $ref: '#/definitions/modelmongo.AchievementDetails'
+      points:
+        type: integer
+      tags:
+        items:
+          type: string
+        type: array
+      title:
+        type: string
+    type: object
+  modelpostgre.AchievementHistory:
+    properties:
+      achievement_ref_id:
+        type: string
+      changed_by_user_id:
+        type: string
+      created_at:
+        type: string
+      id:
+        type: string
+      new_status:
+        $ref: '#/definitions/modelpostgre.AchievementStatus'
+      note:
+        type: string
+      previous_status:
+        $ref: '#/definitions/modelpostgre.AchievementStatus'
+    type: object
+  modelpostgre.AchievementReference:
+    properties:
+      created_at:
+        type: string
+      id:
+        type: string
+      mongo_achievement_id:
+        type: string
+      rejection_note:
+        type: string
+      status:
+        $ref: '#/definitions/modelpostgre.AchievementStatus'
+      student_id:
+        type: string
+      submitted_at:
+        type: string
+      updated_at:
+        type: string
+      verified_at:
+        type: string
+      verified_by:
+        type: string
+    type: object
+  modelpostgre.AchievementStatus:
+    enum:
+    - draft
+    - submitted
+    - verified
+    - rejected
+    type: string
+    x-enum-varnames:
+    - StatusDraft
+    - StatusSubmitted
+    - StatusVerified
+    - StatusRejected
+  modelpostgre.AddRolePermissionRequest:
+    properties:
+      permission_id:
+        type: string
+      role_id:
+        type: string
+    required:
+    - permission_id
+    - role_id
+    type: object
+  modelpostgre.CompetitionLevelStatistic:
+    properties:
+      count:
+        type: integer
+      level:
+        type: string
+    type: object
+  modelpostgre.CreateAchievementRefRequest:
+    properties:
+      mongo_achievement_id:
+        type: string
+    required:
+    - mongo_achievement_id
+    type: object
+  modelpostgre.CreateLecturerRequest:
+    properties:
+      department:
+        type: string
+      lecturer_id:
+        type: string
+      user_id:
+        type: string
+    required:
+    - department
+    - lecturer_id
+    - user_id
+    type: object
+  modelpostgre.CreatePermissionRequest:
+    properties:
+      action:
+        type: string
+      description:
+        type: string
+      name:
+        type: string
+      resource:
+        type: string
+    type: object
+  modelpostgre.CreateRoleRequest:
+    properties:
+      description:
+        type: string
+      name:
+        type: string
+    type: object
+  modelpostgre.CreateStudentRequest:
+    properties:
+      academic_year:
+        type: string
+      advisor_id:
+        type: string
+      program_study:
+        type: string
+      student_id:
+        type: string
+      user_id:
+        type: string
+    required:
+    - academic_year
+    - program_study
+    - student_id
+    - user_id
+    type: object
+  modelpostgre.CreateUserRequest:
+    properties:
+      email:
+        type: string
+      full_name:
+        type: string
+      is_active:
+        type: boolean
+      password:
+        type: string
+      role_name:
+        type: string
+      username:
+        type: string
+    type: object
+  modelpostgre.Lecturer:
+    properties:
+      created_at:
+        type: string
+      department:
+        type: string
+      id:
+        type: string
+      lecturer_id:
+        type: string
+      user_id:
+        type: string
+    type: object
+  modelpostgre.LoginRequest:
+    properties:
+      identity:
+        type: string
+      password:
+        type: string
+    type: object
+  modelpostgre.LoginResponse:
+    properties:
+      refresh_token:
+        type: string
+      token:
+        type: string
+      user:
+        $ref: '#/definitions/modelpostgre.User'
+    type: object
+  modelpostgre.PeriodStatistic:
+    properties:
+      count:
+        type: integer
+      period:
+        type: string
+    type: object
+  modelpostgre.Permission:
+    properties:
+      action:
+        type: string
+      description:
+        type: string
+      id:
+        type: string
+      name:
+        type: string
+      resource:
+        type: string
+    type: object
+  modelpostgre.Role:
+    properties:
+      created_at:
+        type: string
+      description:
+        type: string
+      id:
+        type: string
+      name:
+        type: string
+    type: object
+  modelpostgre.RolePermission:
+    properties:
+      permission_id:
+        type: string
+      role_id:
+        type: string
+    type: object
+  modelpostgre.StatisticsResponse:
+    properties:
+      achievements_by_period:
+        items:
+          $ref: '#/definitions/modelpostgre.PeriodStatistic'
+        type: array
+      achievements_by_status:
+        additionalProperties:
+          type: integer
+        type: object
+      achievements_by_type:
+        additionalProperties:
+          type: integer
+        type: object
+      competition_distribution:
+        items:
+          $ref: '#/definitions/modelpostgre.CompetitionLevelStatistic'
+        type: array
+      top_students:
+        items:
+          $ref: '#/definitions/modelpostgre.TopStudent'
+        type: array
+      total_achievements:
+        type: integer
+    type: object
+  modelpostgre.Student:
+    properties:
+      academic_year:
+        type: string
+      advisor_id:
+        type: string
+      created_at:
+        type: string
+      id:
+        type: string
+      program_study:
+        type: string
+      student_id:
+        type: string
+      user_id:
+        type: string
+    type: object
+  modelpostgre.TopStudent:
+    properties:
+      achievement_count:
+        type: integer
+      program_study:
+        type: string
+      student_id:
+        type: string
+      student_name:
+        type: string
+      total_points:
+        type: integer
+    type: object
+  modelpostgre.UpdateAdvisorRequest:
+    properties:
+      advisor_id:
+        type: string
+    required:
+    - advisor_id
+    type: object
+  modelpostgre.UpdateLecturerRequest:
+    properties:
+      department:
+        type: string
+      lecturer_id:
+        type: string
+    type: object
+  modelpostgre.UpdatePermissionRequest:
+    properties:
+      action:
+        type: string
+      description:
+        type: string
+      name:
+        type: string
+      resource:
+        type: string
+    type: object
+  modelpostgre.UpdateRoleRequest:
+    properties:
+      description:
+        type: string
+      name:
+        type: string
+    type: object
+  modelpostgre.UpdateStudentRequest:
+    properties:
+      academic_year:
+        type: string
+      advisor_id:
+        type: string
+      program_study:
+        type: string
+      student_id:
+        type: string
+    type: object
+  modelpostgre.UpdateUserRequest:
+    properties:
+      email:
+        type: string
+      full_name:
+        type: string
+      is_active:
+        type: boolean
+      password:
+        type: string
+      role_name:
+        type: string
+      username:
+        type: string
+    type: object
+  modelpostgre.UpdateUserRoleRequest:
+    properties:
+      role_name:
+        type: string
+    type: object
+  modelpostgre.User:
+    properties:
+      created_at:
+        type: string
+      email:
+        type: string
+      full_name:
+        type: string
+      id:
+        type: string
+      is_active:
+        type: boolean
+      password_hash:
+        type: string
+      role_id:
+        type: string
+      updated_at:
+        type: string
+      username:
+        type: string
+    type: object
+  modelpostgre.VerificationRequest:
+    properties:
+      rejection_note:
+        type: string
+    type: object
+host: localhost:3000
+info:
+  contact: {}
+  description: API Backend Data Prestasi (PostgreSQL & MongoDB)
+  title: Data Prestasi API
+  version: "1.0"
+paths:
+  /api/v1/achievement-references:
+    get:
+      description: Mengambil daftar semua referensi prestasi tanpa batasan status
+        (Role Admin/Umum).
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Daftar semua prestasi
+          schema:
+            items:
+              $ref: '#/definitions/modelmongo.AchievementWithReference'
+            type: array
+        "500":
+          description: Gagal mengambil semua prestasi
+          schema:
+            additionalProperties: true
+            type: object
+      security:
+      - ApiKeyAuth: []
+      summary: Ambil Semua Prestasi (Admin/All)
+      tags:
+      - Achievement References (Common)
+    post:
+      consumes:
+      - application/json
+      description: Membuat referensi prestasi baru untuk mahasiswa yang sedang login.
+      parameters:
+      - description: Detail Referensi Prestasi
+        in: body
+        name: createARRequest
+        required: true
+        schema:
+          $ref: '#/definitions/modelpostgre.CreateAchievementRefRequest'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/modelpostgre.AchievementReference'
+        "400":
+          description: Body request tidak valid / ID Prestasi (Mongo) tidak valid
+          schema:
+            additionalProperties: true
+            type: object
+        "404":
+          description: Mahasiswa atau Prestasi (Mongo) tidak ditemukan
+          schema:
+            additionalProperties: true
+            type: object
+        "500":
+          description: Gagal membuat referensi
+          schema:
+            additionalProperties: true
+            type: object
+      security:
+      - ApiKeyAuth: []
+      summary: Buat Referensi Prestasi
+      tags:
+      - Achievement References (Student)
+  /api/v1/achievement-references/{id}:
+    delete:
+      description: Menghapus referensi prestasi berdasarkan ID. Hanya bisa dilakukan
+        pada status 'Draft'.
+      parameters:
+      - description: ID Referensi Prestasi (UUID)
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Referensi berhasil dihapus
+          schema:
+            additionalProperties: true
+            type: object
+        "400":
+          description: Format ID tidak valid
+          schema:
+            additionalProperties: true
+            type: object
+        "403":
+          description: Akses ditolak (Status bukan Draft)
+          schema:
+            additionalProperties: true
+            type: object
+        "404":
+          description: Referensi tidak ditemukan
+          schema:
+            additionalProperties: true
+            type: object
+        "500":
+          description: Gagal menghapus referensi
+          schema:
+            additionalProperties: true
+            type: object
+      security:
+      - ApiKeyAuth: []
+      summary: Hapus Referensi Prestasi
+      tags:
+      - Achievement References (Student)
+    get:
+      description: Mengambil detail referensi prestasi berdasarkan ID (UUID).
+      parameters:
+      - description: ID Referensi Prestasi (UUID)
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Referensi ditemukan
+          schema:
+            $ref: '#/definitions/modelmongo.AchievementWithReference'
+        "400":
+          description: Format ID tidak valid
+          schema:
+            additionalProperties: true
+            type: object
+        "404":
+          description: Referensi tidak ditemukan
+          schema:
+            additionalProperties: true
+            type: object
+        "500":
+          description: Gagal mengambil referensi
+          schema:
+            additionalProperties: true
+            type: object
+      security:
+      - ApiKeyAuth: []
+      summary: Ambil Referensi Prestasi berdasarkan ID
+      tags:
+      - Achievement References (Common)
+    put:
+      consumes:
+      - application/json
+      description: Memperbarui detail referensi prestasi. Hanya bisa dilakukan pada
+        status 'Draft'.
+      parameters:
+      - description: ID Referensi Prestasi (UUID)
+        in: path
+        name: id
+        required: true
+        type: string
+      - description: Detail Referensi yang diperbarui
+        in: body
+        name: updateARRequest
+        required: true
+        schema:
+          $ref: '#/definitions/modelmongo.UpdateAchievementRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Referensi berhasil diperbarui
+          schema:
+            $ref: '#/definitions/modelmongo.AchievementWithReference'
+        "400":
+          description: Format ID tidak valid / Body request tidak valid
+          schema:
+            additionalProperties: true
+            type: object
+        "403":
+          description: Akses ditolak (Status bukan Draft)
+          schema:
+            additionalProperties: true
+            type: object
+        "404":
+          description: Referensi tidak ditemukan
+          schema:
+            additionalProperties: true
+            type: object
+        "500":
+          description: Gagal memperbarui referensi
+          schema:
+            additionalProperties: true
+            type: object
+      security:
+      - ApiKeyAuth: []
+      summary: Perbarui Referensi Prestasi
+      tags:
+      - Achievement References (Student)
+  /api/v1/achievement-references/{id}/history:
+    get:
+      description: Mengambil data historis (audit) dari perubahan status referensi
+        prestasi tertentu.
+      parameters:
+      - description: ID Referensi Prestasi (UUID)
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Histori referensi ditemukan
+          schema:
+            items:
+              $ref: '#/definitions/modelpostgre.AchievementHistory'
+            type: array
+        "400":
+          description: Format ID tidak valid
+          schema:
+            additionalProperties: true
+            type: object
+        "404":
+          description: Referensi tidak ditemukan
+          schema:
+            additionalProperties: true
+            type: object
+        "500":
+          description: Gagal mengambil histori
+          schema:
+            additionalProperties: true
+            type: object
+      security:
+      - ApiKeyAuth: []
+      summary: Ambil Histori Referensi Prestasi
+      tags:
+      - Achievement References (Common)
+  /api/v1/achievement-references/{id}/reject:
+    patch:
+      consumes:
+      - application/json
+      description: Mengubah status referensi prestasi dari 'Pending' menjadi 'Rejected',
+        memerlukan catatan penolakan (Role Verifikator).
+      parameters:
+      - description: ID Referensi Prestasi (UUID)
+        in: path
+        name: id
+        required: true
+        type: string
+      - description: Catatan Penolakan
+        in: body
+        name: rejectRequest
+        required: true
+        schema:
+          $ref: '#/definitions/modelpostgre.VerificationRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Prestasi berhasil ditolak
+          schema:
+            $ref: '#/definitions/modelpostgre.AchievementReference'
+        "400":
+          description: Format ID tidak valid / Body request tidak valid
+          schema:
+            additionalProperties: true
+            type: object
+        "403":
+          description: Akses ditolak (Status bukan Pending)
+          schema:
+            additionalProperties: true
+            type: object
+        "404":
+          description: Referensi tidak ditemukan
+          schema:
+            additionalProperties: true
+            type: object
+        "500":
+          description: Gagal menolak
+          schema:
+            additionalProperties: true
+            type: object
+      security:
+      - ApiKeyAuth: []
+      summary: Tolak Prestasi
+      tags:
+      - Achievement References (Verifier)
+  /api/v1/achievement-references/{id}/submit:
+    patch:
+      description: Mengubah status referensi prestasi dari 'Draft' menjadi 'Pending'.
+      parameters:
+      - description: ID Referensi Prestasi (UUID)
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Referensi berhasil disubmit
+          schema:
+            $ref: '#/definitions/modelpostgre.AchievementReference'
+        "400":
+          description: Format ID tidak valid
+          schema:
+            additionalProperties: true
+            type: object
+        "403":
+          description: Akses ditolak (Status bukan Draft)
+          schema:
+            additionalProperties: true
+            type: object
+        "404":
+          description: Referensi tidak ditemukan
+          schema:
+            additionalProperties: true
+            type: object
+        "500":
+          description: Gagal submit referensi
+          schema:
+            additionalProperties: true
+            type: object
+      security:
+      - ApiKeyAuth: []
+      summary: Submit Referensi Prestasi
+      tags:
+      - Achievement References (Student)
+  /api/v1/achievement-references/{id}/verify:
+    patch:
+      description: Mengubah status referensi prestasi dari 'Pending' menjadi 'Verified'
+        (Role Verifikator).
+      parameters:
+      - description: ID Referensi Prestasi (UUID)
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Prestasi berhasil diverifikasi
+          schema:
+            $ref: '#/definitions/modelpostgre.AchievementReference'
+        "400":
+          description: Format ID tidak valid
+          schema:
+            additionalProperties: true
+            type: object
+        "403":
+          description: Akses ditolak (Status bukan Pending)
+          schema:
+            additionalProperties: true
+            type: object
+        "404":
+          description: Referensi tidak ditemukan
+          schema:
+            additionalProperties: true
+            type: object
+        "500":
+          description: Gagal verifikasi
+          schema:
+            additionalProperties: true
+            type: object
+      security:
+      - ApiKeyAuth: []
+      summary: Verifikasi Prestasi
+      tags:
+      - Achievement References (Verifier)
+  /api/v1/achievement-references/advisee:
+    get:
+      description: Mengambil daftar prestasi dari mahasiswa yang dibimbing (Role Dosen).
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Prestasi berhasil diverifikasi
+          schema:
+            $ref: '#/definitions/modelpostgre.AchievementReference'
+        "404":
+          description: Dosen tidak ditemukan
+          schema:
+            additionalProperties: true
+            type: object
+        "500":
+          description: Gagal mengambil prestasi bimbingan
+          schema:
+            additionalProperties: true
+            type: object
+      security:
+      - ApiKeyAuth: []
+      summary: Ambil Prestasi Bimbingan Dosen
+      tags:
+      - Achievement References (Lecturer)
+  /api/v1/achievement-references/my:
+    get:
+      description: Mengambil semua referensi prestasi yang dibuat oleh mahasiswa yang
+        sedang login.
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Daftar prestasi saya
+          schema:
+            items:
+              $ref: '#/definitions/modelmongo.AchievementWithReference'
+            type: array
+        "404":
+          description: Mahasiswa tidak ditemukan
+          schema:
+            additionalProperties: true
+            type: object
+        "500":
+          description: Gagal mengambil prestasi
+          schema:
+            additionalProperties: true
+            type: object
+      security:
+      - ApiKeyAuth: []
+      summary: Ambil Semua Prestasi Saya
+      tags:
+      - Achievement References (Student)
+  /api/v1/achievement-references/pending:
+    get:
+      description: Mengambil daftar semua referensi prestasi dengan status 'Pending'
+        untuk diverifikasi (Role Verifikator).
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Daftar prestasi pending
+          schema:
+            items:
+              $ref: '#/definitions/modelmongo.AchievementWithReference'
+            type: array
+        "500":
+          description: Gagal mengambil prestasi pending
+          schema:
+            additionalProperties: true
+            type: object
+      security:
+      - ApiKeyAuth: []
+      summary: Ambil Prestasi Pending
+      tags:
+      - Achievement References (Verifier)
+  /api/v1/auth/login:
+    post:
+      consumes:
+      - application/json
+      description: Mengautentikasi pengguna dan mengembalikan access dan refresh token.
+        Identitas bisa berupa username atau email.
+      parameters:
+      - description: Kredensial Login
+        in: body
+        name: loginRequest
+        required: true
+        schema:
+          $ref: '#/definitions/modelpostgre.LoginRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Berhasil login
+          schema:
+            $ref: '#/definitions/modelpostgre.LoginResponse'
+        "400":
+          description: Body request tidak valid
+          schema:
+            additionalProperties: true
+            type: object
+        "401":
+          description: Identitas atau password tidak valid / Pengguna tidak aktif
+          schema:
+            additionalProperties: true
+            type: object
+        "500":
+          description: Internal Server Error
+          schema:
+            additionalProperties: true
+            type: object
+      summary: User login
+      tags:
+      - Auth
+  /api/v1/auth/logout:
+    post:
+      description: Memberi tahu pengguna untuk membuang token mereka (invalidasi ditangani
+        oleh klien/masa kadaluarsa).
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Berhasil logout
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      summary: User logout
+      tags:
+      - Auth
+  /api/v1/auth/profile:
+    get:
+      description: Mengambil detail profil pengguna yang sudah terautentikasi.
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Profil pengguna berhasil diambil
+          schema:
+            $ref: '#/definitions/modelpostgre.User'
+        "401":
+          description: Tidak terotorisasi (Token tidak valid)
+          schema:
+            additionalProperties: true
+            type: object
+        "404":
+          description: Pengguna tidak ditemukan
+          schema:
+            additionalProperties: true
+            type: object
+        "500":
+          description: Internal Server Error
+          schema:
+            additionalProperties: true
+            type: object
+      security:
+      - ApiKeyAuth: []
+      summary: Ambil profil pengguna
+      tags:
+      - Auth
+  /api/v1/auth/refresh:
+    post:
+      consumes:
+      - application/json
+      description: Menggunakan refresh token yang valid untuk mendapatkan access token
+        baru.
+      parameters:
+      - description: Refresh Token
+        in: body
+        name: refreshTokenRequest
+        required: true
+        schema:
+          additionalProperties:
+            type: string
+          type: object
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Token berhasil di-refresh
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "400":
+          description: Body request tidak valid
+          schema:
+            additionalProperties: true
+            type: object
+        "401":
+          description: Refresh token tidak valid atau kadaluarsa
+          schema:
+            additionalProperties: true
+            type: object
+        "500":
+          description: Gagal membuat token
+          schema:
+            additionalProperties: true
+            type: object
+      summary: Refresh access token
+      tags:
+      - Auth
+  /api/v1/lecturers:
+    get:
+      description: Mengambil daftar semua profil dosen.
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Daftar dosen
+          schema:
+            items:
+              $ref: '#/definitions/modelpostgre.Lecturer'
+            type: array
+        "500":
+          description: Gagal mengambil data dosen
+          schema:
+            additionalProperties: true
+            type: object
+      security:
+      - ApiKeyAuth: []
+      summary: Ambil semua Dosen
+      tags:
+      - Lecturers
+    post:
+      consumes:
+      - application/json
+      description: Membuat profil dosen baru (Membutuhkan User ID yang sudah ada).
+      parameters:
+      - description: Detail Dosen Baru
+        in: body
+        name: createLecturerRequest
+        required: true
+        schema:
+          $ref: '#/definitions/modelpostgre.CreateLecturerRequest'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Dosen berhasil dibuat
+          schema:
+            $ref: '#/definitions/modelpostgre.Lecturer'
+        "400":
+          description: Body request tidak valid / User ID tidak ditemukan
+          schema:
+            additionalProperties: true
+            type: object
+        "409":
+          description: Dosen sudah ada (Duplicate Entry)
+          schema:
+            additionalProperties: true
+            type: object
+        "500":
+          description: Gagal membuat profil dosen
+          schema:
+            additionalProperties: true
+            type: object
+      security:
+      - ApiKeyAuth: []
+      summary: Buat profil Dosen baru
+      tags:
+      - Lecturers
+  /api/v1/lecturers/{id}:
+    delete:
+      description: Menghapus profil dosen berdasarkan ID (UUID).
+      parameters:
+      - description: ID Pengguna Dosen (UUID)
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Profil dosen berhasil dihapus
+          schema:
+            $ref: '#/definitions/modelpostgre.Lecturer'
+        "400":
+          description: Format ID tidak valid
+          schema:
+            additionalProperties: true
+            type: object
+        "404":
+          description: Dosen tidak ditemukan
+          schema:
+            additionalProperties: true
+            type: object
+        "500":
+          description: Gagal menghapus profil dosen
+          schema:
+            additionalProperties: true
+            type: object
+      security:
+      - ApiKeyAuth: []
+      summary: Hapus profil Dosen
+      tags:
+      - Lecturers
+    get:
+      description: Mengambil detail profil dosen berdasarkan ID (UUID).
+      parameters:
+      - description: ID Pengguna Dosen (UUID)
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Dosen ditemukan
+          schema:
+            $ref: '#/definitions/modelpostgre.Lecturer'
+        "400":
+          description: Format ID tidak valid
+          schema:
+            additionalProperties: true
+            type: object
+        "404":
+          description: Dosen tidak ditemukan
+          schema:
+            additionalProperties: true
+            type: object
+        "500":
+          description: Gagal mengambil data dosen
+          schema:
+            additionalProperties: true
+            type: object
+      security:
+      - ApiKeyAuth: []
+      summary: Ambil Dosen berdasarkan ID
+      tags:
+      - Lecturers
+    put:
+      consumes:
+      - application/json
+      description: Memperbarui detail profil dosen (NIDN, Departemen).
+      parameters:
+      - description: ID Pengguna Dosen (UUID)
+        in: path
+        name: id
+        required: true
+        type: string
+      - description: Detail Dosen yang diperbarui
+        in: body
+        name: updateLecturerRequest
+        required: true
+        schema:
+          $ref: '#/definitions/modelpostgre.UpdateLecturerRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Profil dosen berhasil diperbarui
+          schema:
+            $ref: '#/definitions/modelpostgre.Lecturer'
+        "400":
+          description: Format ID tidak valid / Body request tidak valid
+          schema:
+            additionalProperties: true
+            type: object
+        "404":
+          description: Dosen tidak ditemukan
+          schema:
+            additionalProperties: true
+            type: object
+        "500":
+          description: Gagal memperbarui profil dosen
+          schema:
+            additionalProperties: true
+            type: object
+      security:
+      - ApiKeyAuth: []
+      summary: Perbarui profil Dosen
+      tags:
+      - Lecturers
+  /api/v1/lecturers/{id}/advisees:
+    get:
+      description: Mengambil daftar mahasiswa yang dibimbing oleh dosen tertentu.
+      parameters:
+      - description: ID Pengguna Dosen (UUID)
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Daftar mahasiswa bimbingan
+          schema:
+            items:
+              $ref: '#/definitions/modelpostgre.Student'
+            type: array
+        "400":
+          description: Format ID tidak valid
+          schema:
+            additionalProperties: true
+            type: object
+        "404":
+          description: Dosen tidak ditemukan
+          schema:
+            additionalProperties: true
+            type: object
+        "500":
+          description: Gagal mengambil mahasiswa bimbingan
+          schema:
+            additionalProperties: true
+            type: object
+      security:
+      - ApiKeyAuth: []
+      summary: Ambil Mahasiswa Bimbingan Dosen
+      tags:
+      - Lecturers
+  /api/v1/permissions:
+    get:
+      description: Mengambil daftar semua izin yang tersedia (Permission).
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Daftar izin
+          schema:
+            items:
+              $ref: '#/definitions/modelpostgre.Permission'
+            type: array
+        "500":
+          description: Gagal mengambil izin
+          schema:
+            additionalProperties: true
+            type: object
+      security:
+      - ApiKeyAuth: []
+      summary: Ambil semua izin
+      tags:
+      - Permissions
+    post:
+      consumes:
+      - application/json
+      description: Membuat izin (Permission) baru.
+      parameters:
+      - description: Detail Izin Baru
+        in: body
+        name: createPermissionRequest
+        required: true
+        schema:
+          $ref: '#/definitions/modelpostgre.CreatePermissionRequest'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Izin berhasil dibuat
+          schema:
+            $ref: '#/definitions/modelpostgre.Permission'
+        "400":
+          description: Body request tidak valid
+          schema:
+            additionalProperties: true
+            type: object
+        "500":
+          description: Gagal membuat izin
+          schema:
+            additionalProperties: true
+            type: object
+      security:
+      - ApiKeyAuth: []
+      summary: Buat izin baru
+      tags:
+      - Permissions
+  /api/v1/permissions/{id}:
+    delete:
+      description: Menghapus izin berdasarkan ID.
+      parameters:
+      - description: ID Izin (UUID)
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Izin berhasil dihapus
+          schema:
+            $ref: '#/definitions/modelpostgre.Permission'
+        "400":
+          description: Format ID tidak valid
+          schema:
+            additionalProperties: true
+            type: object
+        "404":
+          description: Izin tidak ditemukan
+          schema:
+            additionalProperties: true
+            type: object
+        "500":
+          description: Gagal menghapus izin
+          schema:
+            additionalProperties: true
+            type: object
+      security:
+      - ApiKeyAuth: []
+      summary: Hapus izin
+      tags:
+      - Permissions
+    get:
+      description: Mengambil detail izin berdasarkan ID.
+      parameters:
+      - description: ID Izin (UUID)
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Izin ditemukan
+          schema:
+            $ref: '#/definitions/modelpostgre.Permission'
+        "400":
+          description: Format ID tidak valid
+          schema:
+            additionalProperties: true
+            type: object
+        "404":
+          description: Izin tidak ditemukan
+          schema:
+            additionalProperties: true
+            type: object
+        "500":
+          description: Gagal mengambil izin
+          schema:
+            additionalProperties: true
+            type: object
+      security:
+      - ApiKeyAuth: []
+      summary: Ambil izin berdasarkan ID
+      tags:
+      - Permissions
+    put:
+      consumes:
+      - application/json
+      description: Memperbarui detail izin.
+      parameters:
+      - description: ID Izin (UUID)
+        in: path
+        name: id
+        required: true
+        type: string
+      - description: Detail Izin yang diperbarui
+        in: body
+        name: updatePermissionRequest
+        required: true
+        schema:
+          $ref: '#/definitions/modelpostgre.UpdatePermissionRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Izin berhasil diperbarui
+          schema:
+            $ref: '#/definitions/modelpostgre.Permission'
+        "400":
+          description: Format ID tidak valid / Body request tidak valid
+          schema:
+            additionalProperties: true
+            type: object
+        "404":
+          description: Izin tidak ditemukan
+          schema:
+            additionalProperties: true
+            type: object
+        "500":
+          description: Gagal memperbarui izin
+          schema:
+            additionalProperties: true
+            type: object
+      security:
+      - ApiKeyAuth: []
+      summary: Perbarui izin
+      tags:
+      - Permissions
+  /api/v1/role-permissions:
+    delete:
+      consumes:
+      - application/json
+      description: Memutus hubungan izin dari peran tertentu.
+      parameters:
+      - description: Role ID dan Permission ID
+        in: body
+        name: removeRolePermissionRequest
+        required: true
+        schema:
+          $ref: '#/definitions/modelpostgre.RolePermission'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Izin berhasil dihapus dari peran
+          schema:
+            $ref: '#/definitions/modelpostgre.RolePermission'
+        "400":
+          description: Body request tidak valid / ID tidak valid
+          schema:
+            additionalProperties: true
+            type: object
+        "404":
+          description: Relasi Role-Permission tidak ditemukan
+          schema:
+            additionalProperties: true
+            type: object
+        "500":
+          description: Gagal menghapus relasi
+          schema:
+            additionalProperties: true
+            type: object
+      security:
+      - ApiKeyAuth: []
+      summary: Hapus Izin dari Peran
+      tags:
+      - Roles & Permissions
+    post:
+      consumes:
+      - application/json
+      description: Menghubungkan izin tertentu dengan peran tertentu.
+      parameters:
+      - description: Role ID dan Permission ID
+        in: body
+        name: addRolePermissionRequest
+        required: true
+        schema:
+          $ref: '#/definitions/modelpostgre.AddRolePermissionRequest'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Izin berhasil ditambahkan ke peran
+          schema:
+            $ref: '#/definitions/modelpostgre.RolePermission'
+        "400":
+          description: Body request tidak valid / ID tidak valid
+          schema:
+            additionalProperties: true
+            type: object
+        "404":
+          description: Role atau Permission tidak ditemukan
+          schema:
+            additionalProperties: true
+            type: object
+        "500":
+          description: Gagal menambahkan relasi
+          schema:
+            additionalProperties: true
+            type: object
+      security:
+      - ApiKeyAuth: []
+      summary: Tambahkan Izin ke Peran
+      tags:
+      - Roles & Permissions
+  /api/v1/roles:
+    get:
+      description: Mengambil daftar semua peran yang tersedia.
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Daftar peran
+          schema:
+            items:
+              $ref: '#/definitions/modelpostgre.Role'
+            type: array
+        "500":
+          description: Gagal mengambil peran
+          schema:
+            additionalProperties: true
+            type: object
+      security:
+      - ApiKeyAuth: []
+      summary: Ambil semua peran
+      tags:
+      - Roles
+    post:
+      consumes:
+      - application/json
+      description: Membuat peran baru.
+      parameters:
+      - description: Detail Peran Baru
+        in: body
+        name: createRoleRequest
+        required: true
+        schema:
+          $ref: '#/definitions/modelpostgre.CreateRoleRequest'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Peran berhasil dibuat
+          schema:
+            $ref: '#/definitions/modelpostgre.Role'
+        "400":
+          description: Body request tidak valid
+          schema:
+            additionalProperties: true
+            type: object
+        "500":
+          description: Gagal membuat peran
+          schema:
+            additionalProperties: true
+            type: object
+      security:
+      - ApiKeyAuth: []
+      summary: Buat peran baru
+      tags:
+      - Roles
+  /api/v1/roles/{id}:
+    delete:
+      description: Menghapus peran berdasarkan ID.
+      parameters:
+      - description: ID Peran (UUID)
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Peran berhasil dihapus
+          schema:
+            $ref: '#/definitions/modelpostgre.Role'
+        "400":
+          description: Format ID tidak valid
+          schema:
+            additionalProperties: true
+            type: object
+        "404":
+          description: Peran tidak ditemukan
+          schema:
+            additionalProperties: true
+            type: object
+        "500":
+          description: Gagal menghapus peran
+          schema:
+            additionalProperties: true
+            type: object
+      security:
+      - ApiKeyAuth: []
+      summary: Hapus peran
+      tags:
+      - Roles
+    get:
+      description: Mengambil detail peran berdasarkan ID.
+      parameters:
+      - description: ID Peran (UUID)
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Peran ditemukan
+          schema:
+            $ref: '#/definitions/modelpostgre.Role'
+        "400":
+          description: Format ID tidak valid
+          schema:
+            additionalProperties: true
+            type: object
+        "404":
+          description: Peran tidak ditemukan
+          schema:
+            additionalProperties: true
+            type: object
+        "500":
+          description: Gagal mengambil peran
+          schema:
+            additionalProperties: true
+            type: object
+      security:
+      - ApiKeyAuth: []
+      summary: Ambil peran berdasarkan ID
+      tags:
+      - Roles
+    put:
+      consumes:
+      - application/json
+      description: Memperbarui nama atau deskripsi peran.
+      parameters:
+      - description: ID Peran (UUID)
+        in: path
+        name: id
+        required: true
+        type: string
+      - description: Detail Peran yang diperbarui
+        in: body
+        name: updateRoleRequest
+        required: true
+        schema:
+          $ref: '#/definitions/modelpostgre.UpdateRoleRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Peran berhasil diperbarui
+          schema:
+            $ref: '#/definitions/modelpostgre.Role'
+        "400":
+          description: Format ID tidak valid / Body request tidak valid
+          schema:
+            additionalProperties: true
+            type: object
+        "404":
+          description: Peran tidak ditemukan
+          schema:
+            additionalProperties: true
+            type: object
+        "500":
+          description: Gagal memperbarui peran
+          schema:
+            additionalProperties: true
+            type: object
+      security:
+      - ApiKeyAuth: []
+      summary: Perbarui peran
+      tags:
+      - Roles
+  /api/v1/statistics/general:
+    get:
+      description: Mengambil statistik umum dan ringkasan seluruh sistem.
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Statistik umum berhasil diambil
+          schema:
+            $ref: '#/definitions/modelpostgre.StatisticsResponse'
+        "500":
+          description: Gagal mengambil statistik
+          schema:
+            additionalProperties: true
+            type: object
+      security:
+      - ApiKeyAuth: []
+      summary: Ambil Statistik Umum
+      tags:
+      - Statistics
+  /api/v1/statistics/student/{studentID}:
+    get:
+      description: Mengambil detail statistik prestasi untuk mahasiswa tertentu.
+      parameters:
+      - description: ID Pengguna Mahasiswa (UUID)
+        in: path
+        name: studentID
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Statistik mahasiswa berhasil diambil
+          schema:
+            $ref: '#/definitions/modelpostgre.StatisticsResponse'
+        "400":
+          description: Format ID tidak valid
+          schema:
+            additionalProperties: true
+            type: object
+        "404":
+          description: Mahasiswa tidak ditemukan
+          schema:
+            additionalProperties: true
+            type: object
+        "500":
+          description: Gagal mengambil statistik mahasiswa
+          schema:
+            additionalProperties: true
+            type: object
+      security:
+      - ApiKeyAuth: []
+      summary: Ambil Statistik Mahasiswa
+      tags:
+      - Statistics
+  /api/v1/students:
+    get:
+      description: Mengambil daftar semua profil mahasiswa.
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Daftar mahasiswa
+          schema:
+            items:
+              $ref: '#/definitions/modelpostgre.Student'
+            type: array
+        "500":
+          description: Gagal mengambil data mahasiswa
+          schema:
+            additionalProperties: true
+            type: object
+      security:
+      - ApiKeyAuth: []
+      summary: Ambil semua Mahasiswa
+      tags:
+      - Students
+    post:
+      consumes:
+      - application/json
+      description: Membuat profil mahasiswa baru (Membutuhkan User ID yang sudah ada).
+      parameters:
+      - description: Detail Mahasiswa Baru
+        in: body
+        name: createStudentRequest
+        required: true
+        schema:
+          $ref: '#/definitions/modelpostgre.CreateStudentRequest'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Mahasiswa berhasil dibuat
+          schema:
+            $ref: '#/definitions/modelpostgre.Student'
+        "400":
+          description: Body request tidak valid / User ID tidak ditemukan
+          schema:
+            additionalProperties: true
+            type: object
+        "409":
+          description: Mahasiswa sudah ada (Duplicate Entry)
+          schema:
+            additionalProperties: true
+            type: object
+        "500":
+          description: Gagal membuat profil mahasiswa
+          schema:
+            additionalProperties: true
+            type: object
+      security:
+      - ApiKeyAuth: []
+      summary: Buat profil Mahasiswa baru
+      tags:
+      - Students
+  /api/v1/students/{id}:
+    delete:
+      description: Menghapus profil mahasiswa berdasarkan ID (UUID).
+      parameters:
+      - description: ID Pengguna Mahasiswa (UUID)
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Profil mahasiswa berhasil dihapus
+          schema:
+            $ref: '#/definitions/modelpostgre.Student'
+        "400":
+          description: Format ID tidak valid
+          schema:
+            additionalProperties: true
+            type: object
+        "404":
+          description: Mahasiswa tidak ditemukan
+          schema:
+            additionalProperties: true
+            type: object
+        "500":
+          description: Gagal menghapus profil mahasiswa
+          schema:
+            additionalProperties: true
+            type: object
+      security:
+      - ApiKeyAuth: []
+      summary: Hapus profil Mahasiswa
+      tags:
+      - Students
+    get:
+      description: Mengambil detail profil mahasiswa berdasarkan ID (UUID).
+      parameters:
+      - description: ID Pengguna Mahasiswa (UUID)
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Mahasiswa ditemukan
+          schema:
+            $ref: '#/definitions/modelpostgre.Student'
+        "400":
+          description: Format ID tidak valid
+          schema:
+            additionalProperties: true
+            type: object
+        "404":
+          description: Mahasiswa tidak ditemukan
+          schema:
+            additionalProperties: true
+            type: object
+        "500":
+          description: Gagal mengambil data mahasiswa
+          schema:
+            additionalProperties: true
+            type: object
+      security:
+      - ApiKeyAuth: []
+      summary: Ambil Mahasiswa berdasarkan ID
+      tags:
+      - Students
+    put:
+      consumes:
+      - application/json
+      description: Memperbarui detail profil mahasiswa (NIM, Program Studi, Tahun
+        Akademik).
+      parameters:
+      - description: ID Pengguna Mahasiswa (UUID)
+        in: path
+        name: id
+        required: true
+        type: string
+      - description: Detail Mahasiswa yang diperbarui
+        in: body
+        name: updateStudentRequest
+        required: true
+        schema:
+          $ref: '#/definitions/modelpostgre.UpdateStudentRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Profil mahasiswa berhasil diperbarui
+          schema:
+            $ref: '#/definitions/modelpostgre.Student'
+        "400":
+          description: Format ID tidak valid / Body request tidak valid
+          schema:
+            additionalProperties: true
+            type: object
+        "404":
+          description: Mahasiswa tidak ditemukan
+          schema:
+            additionalProperties: true
+            type: object
+        "500":
+          description: Gagal memperbarui profil mahasiswa
+          schema:
+            additionalProperties: true
+            type: object
+      security:
+      - ApiKeyAuth: []
+      summary: Perbarui profil Mahasiswa
+      tags:
+      - Students
+  /api/v1/students/{id}/achievements:
+    get:
+      description: Mengambil daftar semua prestasi (Achievement References) yang dimiliki
+        oleh mahasiswa tertentu.
+      parameters:
+      - description: ID Pengguna Mahasiswa (UUID)
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Daftar prestasi mahasiswa
+          schema:
+            items:
+              $ref: '#/definitions/modelpostgre.AchievementReference'
+            type: array
+        "400":
+          description: Format ID tidak valid
+          schema:
+            additionalProperties: true
+            type: object
+        "404":
+          description: Mahasiswa tidak ditemukan
+          schema:
+            additionalProperties: true
+            type: object
+        "500":
+          description: Gagal mengambil prestasi
+          schema:
+            additionalProperties: true
+            type: object
+      security:
+      - ApiKeyAuth: []
+      summary: Ambil Prestasi Mahasiswa
+      tags:
+      - Students
+  /api/v1/students/{id}/advisor:
+    patch:
+      consumes:
+      - application/json
+      description: Memperbarui Dosen Pembimbing (Advisor) untuk mahasiswa tertentu.
+      parameters:
+      - description: ID Pengguna Mahasiswa (UUID)
+        in: path
+        name: id
+        required: true
+        type: string
+      - description: ID Dosen Pembimbing (Advisor ID)
+        in: body
+        name: updateAdvisorRequest
+        required: true
+        schema:
+          $ref: '#/definitions/modelpostgre.UpdateAdvisorRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Dosen Pembimbing berhasil diperbarui
+          schema:
+            $ref: '#/definitions/modelpostgre.Student'
+        "400":
+          description: Format ID tidak valid / Body request tidak valid
+          schema:
+            additionalProperties: true
+            type: object
+        "404":
+          description: Mahasiswa atau Dosen Pembimbing tidak ditemukan
+          schema:
+            additionalProperties: true
+            type: object
+        "500":
+          description: Gagal memperbarui Dosen Pembimbing
+          schema:
+            additionalProperties: true
+            type: object
+      security:
+      - ApiKeyAuth: []
+      summary: Perbarui Dosen Pembimbing Mahasiswa
+      tags:
+      - Students
+  /api/v1/users:
+    get:
+      description: Mengambil daftar semua pengguna (Akses Admin/Role tertentu diperlukan).
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Daftar pengguna
+          schema:
+            items:
+              $ref: '#/definitions/modelpostgre.User'
+            type: array
+        "500":
+          description: Gagal mengambil pengguna
+          schema:
+            additionalProperties: true
+            type: object
+      security:
+      - ApiKeyAuth: []
+      summary: Ambil semua pengguna
+      tags:
+      - Users
+    post:
+      consumes:
+      - application/json
+      description: Membuat pengguna baru dengan peran tertentu.
+      parameters:
+      - description: Informasi pengguna baru
+        in: body
+        name: createUserRequest
+        required: true
+        schema:
+          $ref: '#/definitions/modelpostgre.CreateUserRequest'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Pengguna berhasil dibuat
+          schema:
+            $ref: '#/definitions/modelpostgre.User'
+        "400":
+          description: Body request tidak valid / Peran tidak ditemukan
+          schema:
+            additionalProperties: true
+            type: object
+        "409":
+          description: Username atau Email sudah ada
+          schema:
+            additionalProperties: true
+            type: object
+        "500":
+          description: Gagal membuat pengguna
+          schema:
+            additionalProperties: true
+            type: object
+      security:
+      - ApiKeyAuth: []
+      summary: Buat pengguna baru
+      tags:
+      - Users
+  /api/v1/users/{id}:
+    delete:
+      description: Menghapus pengguna berdasarkan ID.
+      parameters:
+      - description: ID Pengguna (UUID)
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Pengguna berhasil dihapus
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "400":
+          description: Format ID tidak valid
+          schema:
+            additionalProperties: true
+            type: object
+        "404":
+          description: Pengguna tidak ditemukan
+          schema:
+            additionalProperties: true
+            type: object
+        "500":
+          description: Gagal menghapus pengguna
+          schema:
+            additionalProperties: true
+            type: object
+      security:
+      - ApiKeyAuth: []
+      summary: Hapus pengguna
+      tags:
+      - Users
+    get:
+      description: Mengambil satu pengguna berdasarkan ID mereka (UUID).
+      parameters:
+      - description: ID Pengguna (UUID)
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Pengguna ditemukan
+          schema:
+            $ref: '#/definitions/modelpostgre.User'
+        "400":
+          description: Format ID Pengguna tidak valid
+          schema:
+            additionalProperties: true
+            type: object
+        "404":
+          description: Pengguna tidak ditemukan
+          schema:
+            additionalProperties: true
+            type: object
+        "500":
+          description: Internal Server Error
+          schema:
+            additionalProperties: true
+            type: object
+      security:
+      - ApiKeyAuth: []
+      summary: Ambil pengguna berdasarkan ID
+      tags:
+      - Users
+    put:
+      consumes:
+      - application/json
+      description: Memperbarui detail pengguna (termasuk password dan peran opsional).
+      parameters:
+      - description: ID Pengguna (UUID)
+        in: path
+        name: id
+        required: true
+        type: string
+      - description: Informasi pengguna yang diperbarui
+        in: body
+        name: updateUserRequest
+        required: true
+        schema:
+          $ref: '#/definitions/modelpostgre.UpdateUserRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Pengguna berhasil diperbarui
+          schema:
+            $ref: '#/definitions/modelpostgre.User'
+        "400":
+          description: Format ID tidak valid / Body request tidak valid / Peran tidak
+            ditemukan
+          schema:
+            additionalProperties: true
+            type: object
+        "404":
+          description: Pengguna tidak ditemukan
+          schema:
+            additionalProperties: true
+            type: object
+        "500":
+          description: Gagal memperbarui pengguna
+          schema:
+            additionalProperties: true
+            type: object
+      security:
+      - ApiKeyAuth: []
+      summary: Perbarui pengguna
+      tags:
+      - Users
+  /api/v1/users/{id}/role:
+    patch:
+      consumes:
+      - application/json
+      description: Memperbarui peran (Role) dari pengguna tertentu.
+      parameters:
+      - description: ID Pengguna (UUID)
+        in: path
+        name: id
+        required: true
+        type: string
+      - description: Nama Peran Baru
+        in: body
+        name: updateUserRoleRequest
+        required: true
+        schema:
+          $ref: '#/definitions/modelpostgre.UpdateUserRoleRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Peran pengguna berhasil diperbarui
+          schema:
+            $ref: '#/definitions/modelpostgre.User'
+        "400":
+          description: Format ID tidak valid / Body request tidak valid / Peran tidak
+            ditemukan
+          schema:
+            additionalProperties: true
+            type: object
+        "404":
+          description: Pengguna tidak ditemukan
+          schema:
+            additionalProperties: true
+            type: object
+        "500":
+          description: Gagal memperbarui peran pengguna
+          schema:
+            additionalProperties: true
+            type: object
+      security:
+      - ApiKeyAuth: []
+      summary: Perbarui peran pengguna
+      tags:
+      - Users
+schemes:
+- http
+securityDefinitions:
+  ApiKeyAuth:
+    in: header
+    name: Authorization
+    type: apiKey
+swagger: "2.0"

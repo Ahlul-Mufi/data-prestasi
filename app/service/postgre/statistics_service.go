@@ -34,6 +34,14 @@ func NewStatisticsService(
 	}
 }
 
+// @Summary Ambil Statistik Umum
+// @Description Mengambil statistik umum dan ringkasan seluruh sistem.
+// @Tags Statistics
+// @Security ApiKeyAuth
+// @Produce json
+// @Success 200 {object} modelpostgre.StatisticsResponse "Statistik umum berhasil diambil"
+// @Failure 500 {object} map[string]interface{} "Gagal mengambil statistik"
+// @Router /api/v1/statistics/general [get]
 func (s *statisticsService) GetStatistics(c *fiber.Ctx) error {
 	totalAchievements, err := s.statsRepo.GetTotalAchievements(nil)
 	if err != nil {
@@ -79,6 +87,17 @@ func (s *statisticsService) GetStatistics(c *fiber.Ctx) error {
 	return helper.SuccessResponse(c, fiber.StatusOK, response)
 }
 
+// @Summary Ambil Statistik Mahasiswa
+// @Description Mengambil detail statistik prestasi untuk mahasiswa tertentu.
+// @Tags Statistics
+// @Security ApiKeyAuth
+// @Produce json
+// @Param studentID path string true "ID Pengguna Mahasiswa (UUID)"
+// @Success 200 {object} modelpostgre.StatisticsResponse "Statistik mahasiswa berhasil diambil"
+// @Failure 400 {object} map[string]interface{} "Format ID tidak valid"
+// @Failure 404 {object} map[string]interface{} "Mahasiswa tidak ditemukan"
+// @Failure 500 {object} map[string]interface{} "Gagal mengambil statistik mahasiswa"
+// @Router /api/v1/statistics/student/{studentID} [get]
 func (s *statisticsService) GetStudentStatistics(c *fiber.Ctx) error {
 	idStr := c.Params("id")
 	studentID, err := uuid.Parse(idStr)

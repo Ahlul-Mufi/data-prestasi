@@ -23,6 +23,18 @@ func NewRolePermissionService(r repo.RolePermissionRepository) RolePermissionSer
 	return &rolePermissionService{r}
 }
 
+// @Summary Tambahkan Izin ke Peran
+// @Description Menghubungkan izin tertentu dengan peran tertentu.
+// @Tags Roles & Permissions
+// @Security ApiKeyAuth
+// @Accept json
+// @Produce json
+// @Param addRolePermissionRequest body m.AddRolePermissionRequest true "Role ID dan Permission ID"
+// @Success 201 {object} modelpostgre.RolePermission "Izin berhasil ditambahkan ke peran"
+// @Failure 400 {object} map[string]interface{} "Body request tidak valid / ID tidak valid"
+// @Failure 404 {object} map[string]interface{} "Role atau Permission tidak ditemukan"
+// @Failure 500 {object} map[string]interface{} "Gagal menambahkan relasi"
+// @Router /api/v1/role-permissions [post]
 func (s *rolePermissionService) Add(c *fiber.Ctx) error {
 	var req m.AddRolePermissionRequest
 	if err := c.BodyParser(&req); err != nil {
@@ -46,6 +58,18 @@ func (s *rolePermissionService) Add(c *fiber.Ctx) error {
 	return helper.SuccessResponse(c, fiber.StatusCreated, result)
 }
 
+// @Summary Hapus Izin dari Peran
+// @Description Memutus hubungan izin dari peran tertentu.
+// @Tags Roles & Permissions
+// @Security ApiKeyAuth
+// @Accept json
+// @Produce json
+// @Param removeRolePermissionRequest body m.RolePermission true "Role ID dan Permission ID"
+// @Success 200 {object} modelpostgre.RolePermission "Izin berhasil dihapus dari peran"
+// @Failure 400 {object} map[string]interface{} "Body request tidak valid / ID tidak valid"
+// @Failure 404 {object} map[string]interface{} "Relasi Role-Permission tidak ditemukan"
+// @Failure 500 {object} map[string]interface{} "Gagal menghapus relasi"
+// @Router /api/v1/role-permissions [delete]
 func (s *rolePermissionService) Remove(c *fiber.Ctx) error {
 	var req m.RolePermission
 	if err := c.BodyParser(&req); err != nil {

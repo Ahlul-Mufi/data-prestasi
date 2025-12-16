@@ -1,0 +1,3427 @@
+{
+    "schemes": [
+        "http"
+    ],
+    "swagger": "2.0",
+    "info": {
+        "description": "API Backend Data Prestasi (PostgreSQL \u0026 MongoDB)",
+        "title": "Data Prestasi API",
+        "contact": {},
+        "version": "1.0"
+    },
+    "host": "localhost:3000",
+    "basePath": "/",
+    "paths": {
+        "/api/v1/achievement-references": {
+            "get": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "description": "Mengambil daftar semua referensi prestasi tanpa batasan status (Role Admin/Umum).",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Achievement References (Common)"
+                ],
+                "summary": "Ambil Semua Prestasi (Admin/All)",
+                "responses": {
+                    "200": {
+                        "description": "Daftar semua prestasi",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/modelmongo.AchievementWithReference"
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Gagal mengambil semua prestasi",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": true
+                        }
+                    }
+                }
+            },
+            "post": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "description": "Membuat referensi prestasi baru untuk mahasiswa yang sedang login.",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Achievement References (Student)"
+                ],
+                "summary": "Buat Referensi Prestasi",
+                "parameters": [
+                    {
+                        "description": "Detail Referensi Prestasi",
+                        "name": "createARRequest",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/modelpostgre.CreateAchievementRefRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "Created",
+                        "schema": {
+                            "$ref": "#/definitions/modelpostgre.AchievementReference"
+                        }
+                    },
+                    "400": {
+                        "description": "Body request tidak valid / ID Prestasi (Mongo) tidak valid",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": true
+                        }
+                    },
+                    "404": {
+                        "description": "Mahasiswa atau Prestasi (Mongo) tidak ditemukan",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": true
+                        }
+                    },
+                    "500": {
+                        "description": "Gagal membuat referensi",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": true
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/achievement-references/advisee": {
+            "get": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "description": "Mengambil daftar prestasi dari mahasiswa yang dibimbing (Role Dosen).",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Achievement References (Lecturer)"
+                ],
+                "summary": "Ambil Prestasi Bimbingan Dosen",
+                "responses": {
+                    "200": {
+                        "description": "Prestasi berhasil diverifikasi",
+                        "schema": {
+                            "$ref": "#/definitions/modelpostgre.AchievementReference"
+                        }
+                    },
+                    "404": {
+                        "description": "Dosen tidak ditemukan",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": true
+                        }
+                    },
+                    "500": {
+                        "description": "Gagal mengambil prestasi bimbingan",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": true
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/achievement-references/my": {
+            "get": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "description": "Mengambil semua referensi prestasi yang dibuat oleh mahasiswa yang sedang login.",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Achievement References (Student)"
+                ],
+                "summary": "Ambil Semua Prestasi Saya",
+                "responses": {
+                    "200": {
+                        "description": "Daftar prestasi saya",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/modelmongo.AchievementWithReference"
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Mahasiswa tidak ditemukan",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": true
+                        }
+                    },
+                    "500": {
+                        "description": "Gagal mengambil prestasi",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": true
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/achievement-references/pending": {
+            "get": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "description": "Mengambil daftar semua referensi prestasi dengan status 'Pending' untuk diverifikasi (Role Verifikator).",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Achievement References (Verifier)"
+                ],
+                "summary": "Ambil Prestasi Pending",
+                "responses": {
+                    "200": {
+                        "description": "Daftar prestasi pending",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/modelmongo.AchievementWithReference"
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Gagal mengambil prestasi pending",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": true
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/achievement-references/{id}": {
+            "get": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "description": "Mengambil detail referensi prestasi berdasarkan ID (UUID).",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Achievement References (Common)"
+                ],
+                "summary": "Ambil Referensi Prestasi berdasarkan ID",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "ID Referensi Prestasi (UUID)",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Referensi ditemukan",
+                        "schema": {
+                            "$ref": "#/definitions/modelmongo.AchievementWithReference"
+                        }
+                    },
+                    "400": {
+                        "description": "Format ID tidak valid",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": true
+                        }
+                    },
+                    "404": {
+                        "description": "Referensi tidak ditemukan",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": true
+                        }
+                    },
+                    "500": {
+                        "description": "Gagal mengambil referensi",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": true
+                        }
+                    }
+                }
+            },
+            "put": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "description": "Memperbarui detail referensi prestasi. Hanya bisa dilakukan pada status 'Draft'.",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Achievement References (Student)"
+                ],
+                "summary": "Perbarui Referensi Prestasi",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "ID Referensi Prestasi (UUID)",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "description": "Detail Referensi yang diperbarui",
+                        "name": "updateARRequest",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/modelmongo.UpdateAchievementRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Referensi berhasil diperbarui",
+                        "schema": {
+                            "$ref": "#/definitions/modelmongo.AchievementWithReference"
+                        }
+                    },
+                    "400": {
+                        "description": "Format ID tidak valid / Body request tidak valid",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": true
+                        }
+                    },
+                    "403": {
+                        "description": "Akses ditolak (Status bukan Draft)",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": true
+                        }
+                    },
+                    "404": {
+                        "description": "Referensi tidak ditemukan",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": true
+                        }
+                    },
+                    "500": {
+                        "description": "Gagal memperbarui referensi",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": true
+                        }
+                    }
+                }
+            },
+            "delete": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "description": "Menghapus referensi prestasi berdasarkan ID. Hanya bisa dilakukan pada status 'Draft'.",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Achievement References (Student)"
+                ],
+                "summary": "Hapus Referensi Prestasi",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "ID Referensi Prestasi (UUID)",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Referensi berhasil dihapus",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": true
+                        }
+                    },
+                    "400": {
+                        "description": "Format ID tidak valid",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": true
+                        }
+                    },
+                    "403": {
+                        "description": "Akses ditolak (Status bukan Draft)",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": true
+                        }
+                    },
+                    "404": {
+                        "description": "Referensi tidak ditemukan",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": true
+                        }
+                    },
+                    "500": {
+                        "description": "Gagal menghapus referensi",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": true
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/achievement-references/{id}/history": {
+            "get": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "description": "Mengambil data historis (audit) dari perubahan status referensi prestasi tertentu.",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Achievement References (Common)"
+                ],
+                "summary": "Ambil Histori Referensi Prestasi",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "ID Referensi Prestasi (UUID)",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Histori referensi ditemukan",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/modelpostgre.AchievementHistory"
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Format ID tidak valid",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": true
+                        }
+                    },
+                    "404": {
+                        "description": "Referensi tidak ditemukan",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": true
+                        }
+                    },
+                    "500": {
+                        "description": "Gagal mengambil histori",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": true
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/achievement-references/{id}/reject": {
+            "patch": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "description": "Mengubah status referensi prestasi dari 'Pending' menjadi 'Rejected', memerlukan catatan penolakan (Role Verifikator).",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Achievement References (Verifier)"
+                ],
+                "summary": "Tolak Prestasi",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "ID Referensi Prestasi (UUID)",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "description": "Catatan Penolakan",
+                        "name": "rejectRequest",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/modelpostgre.VerificationRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Prestasi berhasil ditolak",
+                        "schema": {
+                            "$ref": "#/definitions/modelpostgre.AchievementReference"
+                        }
+                    },
+                    "400": {
+                        "description": "Format ID tidak valid / Body request tidak valid",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": true
+                        }
+                    },
+                    "403": {
+                        "description": "Akses ditolak (Status bukan Pending)",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": true
+                        }
+                    },
+                    "404": {
+                        "description": "Referensi tidak ditemukan",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": true
+                        }
+                    },
+                    "500": {
+                        "description": "Gagal menolak",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": true
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/achievement-references/{id}/submit": {
+            "patch": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "description": "Mengubah status referensi prestasi dari 'Draft' menjadi 'Pending'.",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Achievement References (Student)"
+                ],
+                "summary": "Submit Referensi Prestasi",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "ID Referensi Prestasi (UUID)",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Referensi berhasil disubmit",
+                        "schema": {
+                            "$ref": "#/definitions/modelpostgre.AchievementReference"
+                        }
+                    },
+                    "400": {
+                        "description": "Format ID tidak valid",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": true
+                        }
+                    },
+                    "403": {
+                        "description": "Akses ditolak (Status bukan Draft)",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": true
+                        }
+                    },
+                    "404": {
+                        "description": "Referensi tidak ditemukan",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": true
+                        }
+                    },
+                    "500": {
+                        "description": "Gagal submit referensi",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": true
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/achievement-references/{id}/verify": {
+            "patch": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "description": "Mengubah status referensi prestasi dari 'Pending' menjadi 'Verified' (Role Verifikator).",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Achievement References (Verifier)"
+                ],
+                "summary": "Verifikasi Prestasi",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "ID Referensi Prestasi (UUID)",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Prestasi berhasil diverifikasi",
+                        "schema": {
+                            "$ref": "#/definitions/modelpostgre.AchievementReference"
+                        }
+                    },
+                    "400": {
+                        "description": "Format ID tidak valid",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": true
+                        }
+                    },
+                    "403": {
+                        "description": "Akses ditolak (Status bukan Pending)",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": true
+                        }
+                    },
+                    "404": {
+                        "description": "Referensi tidak ditemukan",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": true
+                        }
+                    },
+                    "500": {
+                        "description": "Gagal verifikasi",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": true
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/auth/login": {
+            "post": {
+                "description": "Mengautentikasi pengguna dan mengembalikan access dan refresh token. Identitas bisa berupa username atau email.",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Auth"
+                ],
+                "summary": "User login",
+                "parameters": [
+                    {
+                        "description": "Kredensial Login",
+                        "name": "loginRequest",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/modelpostgre.LoginRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Berhasil login",
+                        "schema": {
+                            "$ref": "#/definitions/modelpostgre.LoginResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Body request tidak valid",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": true
+                        }
+                    },
+                    "401": {
+                        "description": "Identitas atau password tidak valid / Pengguna tidak aktif",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": true
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": true
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/auth/logout": {
+            "post": {
+                "description": "Memberi tahu pengguna untuk membuang token mereka (invalidasi ditangani oleh klien/masa kadaluarsa).",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Auth"
+                ],
+                "summary": "User logout",
+                "responses": {
+                    "200": {
+                        "description": "Berhasil logout",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/auth/profile": {
+            "get": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "description": "Mengambil detail profil pengguna yang sudah terautentikasi.",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Auth"
+                ],
+                "summary": "Ambil profil pengguna",
+                "responses": {
+                    "200": {
+                        "description": "Profil pengguna berhasil diambil",
+                        "schema": {
+                            "$ref": "#/definitions/modelpostgre.User"
+                        }
+                    },
+                    "401": {
+                        "description": "Tidak terotorisasi (Token tidak valid)",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": true
+                        }
+                    },
+                    "404": {
+                        "description": "Pengguna tidak ditemukan",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": true
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": true
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/auth/refresh": {
+            "post": {
+                "description": "Menggunakan refresh token yang valid untuk mendapatkan access token baru.",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Auth"
+                ],
+                "summary": "Refresh access token",
+                "parameters": [
+                    {
+                        "description": "Refresh Token",
+                        "name": "refreshTokenRequest",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Token berhasil di-refresh",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Body request tidak valid",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": true
+                        }
+                    },
+                    "401": {
+                        "description": "Refresh token tidak valid atau kadaluarsa",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": true
+                        }
+                    },
+                    "500": {
+                        "description": "Gagal membuat token",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": true
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/lecturers": {
+            "get": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "description": "Mengambil daftar semua profil dosen.",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Lecturers"
+                ],
+                "summary": "Ambil semua Dosen",
+                "responses": {
+                    "200": {
+                        "description": "Daftar dosen",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/modelpostgre.Lecturer"
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Gagal mengambil data dosen",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": true
+                        }
+                    }
+                }
+            },
+            "post": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "description": "Membuat profil dosen baru (Membutuhkan User ID yang sudah ada).",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Lecturers"
+                ],
+                "summary": "Buat profil Dosen baru",
+                "parameters": [
+                    {
+                        "description": "Detail Dosen Baru",
+                        "name": "createLecturerRequest",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/modelpostgre.CreateLecturerRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "Dosen berhasil dibuat",
+                        "schema": {
+                            "$ref": "#/definitions/modelpostgre.Lecturer"
+                        }
+                    },
+                    "400": {
+                        "description": "Body request tidak valid / User ID tidak ditemukan",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": true
+                        }
+                    },
+                    "409": {
+                        "description": "Dosen sudah ada (Duplicate Entry)",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": true
+                        }
+                    },
+                    "500": {
+                        "description": "Gagal membuat profil dosen",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": true
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/lecturers/{id}": {
+            "get": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "description": "Mengambil detail profil dosen berdasarkan ID (UUID).",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Lecturers"
+                ],
+                "summary": "Ambil Dosen berdasarkan ID",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "ID Pengguna Dosen (UUID)",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Dosen ditemukan",
+                        "schema": {
+                            "$ref": "#/definitions/modelpostgre.Lecturer"
+                        }
+                    },
+                    "400": {
+                        "description": "Format ID tidak valid",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": true
+                        }
+                    },
+                    "404": {
+                        "description": "Dosen tidak ditemukan",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": true
+                        }
+                    },
+                    "500": {
+                        "description": "Gagal mengambil data dosen",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": true
+                        }
+                    }
+                }
+            },
+            "put": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "description": "Memperbarui detail profil dosen (NIDN, Departemen).",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Lecturers"
+                ],
+                "summary": "Perbarui profil Dosen",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "ID Pengguna Dosen (UUID)",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "description": "Detail Dosen yang diperbarui",
+                        "name": "updateLecturerRequest",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/modelpostgre.UpdateLecturerRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Profil dosen berhasil diperbarui",
+                        "schema": {
+                            "$ref": "#/definitions/modelpostgre.Lecturer"
+                        }
+                    },
+                    "400": {
+                        "description": "Format ID tidak valid / Body request tidak valid",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": true
+                        }
+                    },
+                    "404": {
+                        "description": "Dosen tidak ditemukan",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": true
+                        }
+                    },
+                    "500": {
+                        "description": "Gagal memperbarui profil dosen",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": true
+                        }
+                    }
+                }
+            },
+            "delete": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "description": "Menghapus profil dosen berdasarkan ID (UUID).",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Lecturers"
+                ],
+                "summary": "Hapus profil Dosen",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "ID Pengguna Dosen (UUID)",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Profil dosen berhasil dihapus",
+                        "schema": {
+                            "$ref": "#/definitions/modelpostgre.Lecturer"
+                        }
+                    },
+                    "400": {
+                        "description": "Format ID tidak valid",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": true
+                        }
+                    },
+                    "404": {
+                        "description": "Dosen tidak ditemukan",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": true
+                        }
+                    },
+                    "500": {
+                        "description": "Gagal menghapus profil dosen",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": true
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/lecturers/{id}/advisees": {
+            "get": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "description": "Mengambil daftar mahasiswa yang dibimbing oleh dosen tertentu.",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Lecturers"
+                ],
+                "summary": "Ambil Mahasiswa Bimbingan Dosen",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "ID Pengguna Dosen (UUID)",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Daftar mahasiswa bimbingan",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/modelpostgre.Student"
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Format ID tidak valid",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": true
+                        }
+                    },
+                    "404": {
+                        "description": "Dosen tidak ditemukan",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": true
+                        }
+                    },
+                    "500": {
+                        "description": "Gagal mengambil mahasiswa bimbingan",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": true
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/permissions": {
+            "get": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "description": "Mengambil daftar semua izin yang tersedia (Permission).",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Permissions"
+                ],
+                "summary": "Ambil semua izin",
+                "responses": {
+                    "200": {
+                        "description": "Daftar izin",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/modelpostgre.Permission"
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Gagal mengambil izin",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": true
+                        }
+                    }
+                }
+            },
+            "post": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "description": "Membuat izin (Permission) baru.",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Permissions"
+                ],
+                "summary": "Buat izin baru",
+                "parameters": [
+                    {
+                        "description": "Detail Izin Baru",
+                        "name": "createPermissionRequest",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/modelpostgre.CreatePermissionRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "Izin berhasil dibuat",
+                        "schema": {
+                            "$ref": "#/definitions/modelpostgre.Permission"
+                        }
+                    },
+                    "400": {
+                        "description": "Body request tidak valid",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": true
+                        }
+                    },
+                    "500": {
+                        "description": "Gagal membuat izin",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": true
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/permissions/{id}": {
+            "get": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "description": "Mengambil detail izin berdasarkan ID.",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Permissions"
+                ],
+                "summary": "Ambil izin berdasarkan ID",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "ID Izin (UUID)",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Izin ditemukan",
+                        "schema": {
+                            "$ref": "#/definitions/modelpostgre.Permission"
+                        }
+                    },
+                    "400": {
+                        "description": "Format ID tidak valid",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": true
+                        }
+                    },
+                    "404": {
+                        "description": "Izin tidak ditemukan",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": true
+                        }
+                    },
+                    "500": {
+                        "description": "Gagal mengambil izin",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": true
+                        }
+                    }
+                }
+            },
+            "put": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "description": "Memperbarui detail izin.",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Permissions"
+                ],
+                "summary": "Perbarui izin",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "ID Izin (UUID)",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "description": "Detail Izin yang diperbarui",
+                        "name": "updatePermissionRequest",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/modelpostgre.UpdatePermissionRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Izin berhasil diperbarui",
+                        "schema": {
+                            "$ref": "#/definitions/modelpostgre.Permission"
+                        }
+                    },
+                    "400": {
+                        "description": "Format ID tidak valid / Body request tidak valid",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": true
+                        }
+                    },
+                    "404": {
+                        "description": "Izin tidak ditemukan",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": true
+                        }
+                    },
+                    "500": {
+                        "description": "Gagal memperbarui izin",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": true
+                        }
+                    }
+                }
+            },
+            "delete": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "description": "Menghapus izin berdasarkan ID.",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Permissions"
+                ],
+                "summary": "Hapus izin",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "ID Izin (UUID)",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Izin berhasil dihapus",
+                        "schema": {
+                            "$ref": "#/definitions/modelpostgre.Permission"
+                        }
+                    },
+                    "400": {
+                        "description": "Format ID tidak valid",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": true
+                        }
+                    },
+                    "404": {
+                        "description": "Izin tidak ditemukan",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": true
+                        }
+                    },
+                    "500": {
+                        "description": "Gagal menghapus izin",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": true
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/role-permissions": {
+            "post": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "description": "Menghubungkan izin tertentu dengan peran tertentu.",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Roles \u0026 Permissions"
+                ],
+                "summary": "Tambahkan Izin ke Peran",
+                "parameters": [
+                    {
+                        "description": "Role ID dan Permission ID",
+                        "name": "addRolePermissionRequest",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/modelpostgre.AddRolePermissionRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "Izin berhasil ditambahkan ke peran",
+                        "schema": {
+                            "$ref": "#/definitions/modelpostgre.RolePermission"
+                        }
+                    },
+                    "400": {
+                        "description": "Body request tidak valid / ID tidak valid",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": true
+                        }
+                    },
+                    "404": {
+                        "description": "Role atau Permission tidak ditemukan",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": true
+                        }
+                    },
+                    "500": {
+                        "description": "Gagal menambahkan relasi",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": true
+                        }
+                    }
+                }
+            },
+            "delete": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "description": "Memutus hubungan izin dari peran tertentu.",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Roles \u0026 Permissions"
+                ],
+                "summary": "Hapus Izin dari Peran",
+                "parameters": [
+                    {
+                        "description": "Role ID dan Permission ID",
+                        "name": "removeRolePermissionRequest",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/modelpostgre.RolePermission"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Izin berhasil dihapus dari peran",
+                        "schema": {
+                            "$ref": "#/definitions/modelpostgre.RolePermission"
+                        }
+                    },
+                    "400": {
+                        "description": "Body request tidak valid / ID tidak valid",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": true
+                        }
+                    },
+                    "404": {
+                        "description": "Relasi Role-Permission tidak ditemukan",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": true
+                        }
+                    },
+                    "500": {
+                        "description": "Gagal menghapus relasi",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": true
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/roles": {
+            "get": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "description": "Mengambil daftar semua peran yang tersedia.",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Roles"
+                ],
+                "summary": "Ambil semua peran",
+                "responses": {
+                    "200": {
+                        "description": "Daftar peran",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/modelpostgre.Role"
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Gagal mengambil peran",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": true
+                        }
+                    }
+                }
+            },
+            "post": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "description": "Membuat peran baru.",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Roles"
+                ],
+                "summary": "Buat peran baru",
+                "parameters": [
+                    {
+                        "description": "Detail Peran Baru",
+                        "name": "createRoleRequest",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/modelpostgre.CreateRoleRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "Peran berhasil dibuat",
+                        "schema": {
+                            "$ref": "#/definitions/modelpostgre.Role"
+                        }
+                    },
+                    "400": {
+                        "description": "Body request tidak valid",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": true
+                        }
+                    },
+                    "500": {
+                        "description": "Gagal membuat peran",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": true
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/roles/{id}": {
+            "get": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "description": "Mengambil detail peran berdasarkan ID.",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Roles"
+                ],
+                "summary": "Ambil peran berdasarkan ID",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "ID Peran (UUID)",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Peran ditemukan",
+                        "schema": {
+                            "$ref": "#/definitions/modelpostgre.Role"
+                        }
+                    },
+                    "400": {
+                        "description": "Format ID tidak valid",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": true
+                        }
+                    },
+                    "404": {
+                        "description": "Peran tidak ditemukan",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": true
+                        }
+                    },
+                    "500": {
+                        "description": "Gagal mengambil peran",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": true
+                        }
+                    }
+                }
+            },
+            "put": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "description": "Memperbarui nama atau deskripsi peran.",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Roles"
+                ],
+                "summary": "Perbarui peran",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "ID Peran (UUID)",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "description": "Detail Peran yang diperbarui",
+                        "name": "updateRoleRequest",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/modelpostgre.UpdateRoleRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Peran berhasil diperbarui",
+                        "schema": {
+                            "$ref": "#/definitions/modelpostgre.Role"
+                        }
+                    },
+                    "400": {
+                        "description": "Format ID tidak valid / Body request tidak valid",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": true
+                        }
+                    },
+                    "404": {
+                        "description": "Peran tidak ditemukan",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": true
+                        }
+                    },
+                    "500": {
+                        "description": "Gagal memperbarui peran",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": true
+                        }
+                    }
+                }
+            },
+            "delete": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "description": "Menghapus peran berdasarkan ID.",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Roles"
+                ],
+                "summary": "Hapus peran",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "ID Peran (UUID)",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Peran berhasil dihapus",
+                        "schema": {
+                            "$ref": "#/definitions/modelpostgre.Role"
+                        }
+                    },
+                    "400": {
+                        "description": "Format ID tidak valid",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": true
+                        }
+                    },
+                    "404": {
+                        "description": "Peran tidak ditemukan",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": true
+                        }
+                    },
+                    "500": {
+                        "description": "Gagal menghapus peran",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": true
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/statistics/general": {
+            "get": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "description": "Mengambil statistik umum dan ringkasan seluruh sistem.",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Statistics"
+                ],
+                "summary": "Ambil Statistik Umum",
+                "responses": {
+                    "200": {
+                        "description": "Statistik umum berhasil diambil",
+                        "schema": {
+                            "$ref": "#/definitions/modelpostgre.StatisticsResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Gagal mengambil statistik",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": true
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/statistics/student/{studentID}": {
+            "get": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "description": "Mengambil detail statistik prestasi untuk mahasiswa tertentu.",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Statistics"
+                ],
+                "summary": "Ambil Statistik Mahasiswa",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "ID Pengguna Mahasiswa (UUID)",
+                        "name": "studentID",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Statistik mahasiswa berhasil diambil",
+                        "schema": {
+                            "$ref": "#/definitions/modelpostgre.StatisticsResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Format ID tidak valid",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": true
+                        }
+                    },
+                    "404": {
+                        "description": "Mahasiswa tidak ditemukan",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": true
+                        }
+                    },
+                    "500": {
+                        "description": "Gagal mengambil statistik mahasiswa",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": true
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/students": {
+            "get": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "description": "Mengambil daftar semua profil mahasiswa.",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Students"
+                ],
+                "summary": "Ambil semua Mahasiswa",
+                "responses": {
+                    "200": {
+                        "description": "Daftar mahasiswa",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/modelpostgre.Student"
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Gagal mengambil data mahasiswa",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": true
+                        }
+                    }
+                }
+            },
+            "post": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "description": "Membuat profil mahasiswa baru (Membutuhkan User ID yang sudah ada).",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Students"
+                ],
+                "summary": "Buat profil Mahasiswa baru",
+                "parameters": [
+                    {
+                        "description": "Detail Mahasiswa Baru",
+                        "name": "createStudentRequest",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/modelpostgre.CreateStudentRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "Mahasiswa berhasil dibuat",
+                        "schema": {
+                            "$ref": "#/definitions/modelpostgre.Student"
+                        }
+                    },
+                    "400": {
+                        "description": "Body request tidak valid / User ID tidak ditemukan",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": true
+                        }
+                    },
+                    "409": {
+                        "description": "Mahasiswa sudah ada (Duplicate Entry)",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": true
+                        }
+                    },
+                    "500": {
+                        "description": "Gagal membuat profil mahasiswa",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": true
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/students/{id}": {
+            "get": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "description": "Mengambil detail profil mahasiswa berdasarkan ID (UUID).",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Students"
+                ],
+                "summary": "Ambil Mahasiswa berdasarkan ID",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "ID Pengguna Mahasiswa (UUID)",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Mahasiswa ditemukan",
+                        "schema": {
+                            "$ref": "#/definitions/modelpostgre.Student"
+                        }
+                    },
+                    "400": {
+                        "description": "Format ID tidak valid",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": true
+                        }
+                    },
+                    "404": {
+                        "description": "Mahasiswa tidak ditemukan",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": true
+                        }
+                    },
+                    "500": {
+                        "description": "Gagal mengambil data mahasiswa",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": true
+                        }
+                    }
+                }
+            },
+            "put": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "description": "Memperbarui detail profil mahasiswa (NIM, Program Studi, Tahun Akademik).",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Students"
+                ],
+                "summary": "Perbarui profil Mahasiswa",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "ID Pengguna Mahasiswa (UUID)",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "description": "Detail Mahasiswa yang diperbarui",
+                        "name": "updateStudentRequest",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/modelpostgre.UpdateStudentRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Profil mahasiswa berhasil diperbarui",
+                        "schema": {
+                            "$ref": "#/definitions/modelpostgre.Student"
+                        }
+                    },
+                    "400": {
+                        "description": "Format ID tidak valid / Body request tidak valid",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": true
+                        }
+                    },
+                    "404": {
+                        "description": "Mahasiswa tidak ditemukan",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": true
+                        }
+                    },
+                    "500": {
+                        "description": "Gagal memperbarui profil mahasiswa",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": true
+                        }
+                    }
+                }
+            },
+            "delete": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "description": "Menghapus profil mahasiswa berdasarkan ID (UUID).",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Students"
+                ],
+                "summary": "Hapus profil Mahasiswa",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "ID Pengguna Mahasiswa (UUID)",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Profil mahasiswa berhasil dihapus",
+                        "schema": {
+                            "$ref": "#/definitions/modelpostgre.Student"
+                        }
+                    },
+                    "400": {
+                        "description": "Format ID tidak valid",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": true
+                        }
+                    },
+                    "404": {
+                        "description": "Mahasiswa tidak ditemukan",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": true
+                        }
+                    },
+                    "500": {
+                        "description": "Gagal menghapus profil mahasiswa",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": true
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/students/{id}/achievements": {
+            "get": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "description": "Mengambil daftar semua prestasi (Achievement References) yang dimiliki oleh mahasiswa tertentu.",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Students"
+                ],
+                "summary": "Ambil Prestasi Mahasiswa",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "ID Pengguna Mahasiswa (UUID)",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Daftar prestasi mahasiswa",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/modelpostgre.AchievementReference"
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Format ID tidak valid",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": true
+                        }
+                    },
+                    "404": {
+                        "description": "Mahasiswa tidak ditemukan",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": true
+                        }
+                    },
+                    "500": {
+                        "description": "Gagal mengambil prestasi",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": true
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/students/{id}/advisor": {
+            "patch": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "description": "Memperbarui Dosen Pembimbing (Advisor) untuk mahasiswa tertentu.",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Students"
+                ],
+                "summary": "Perbarui Dosen Pembimbing Mahasiswa",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "ID Pengguna Mahasiswa (UUID)",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "description": "ID Dosen Pembimbing (Advisor ID)",
+                        "name": "updateAdvisorRequest",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/modelpostgre.UpdateAdvisorRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Dosen Pembimbing berhasil diperbarui",
+                        "schema": {
+                            "$ref": "#/definitions/modelpostgre.Student"
+                        }
+                    },
+                    "400": {
+                        "description": "Format ID tidak valid / Body request tidak valid",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": true
+                        }
+                    },
+                    "404": {
+                        "description": "Mahasiswa atau Dosen Pembimbing tidak ditemukan",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": true
+                        }
+                    },
+                    "500": {
+                        "description": "Gagal memperbarui Dosen Pembimbing",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": true
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/users": {
+            "get": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "description": "Mengambil daftar semua pengguna (Akses Admin/Role tertentu diperlukan).",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Users"
+                ],
+                "summary": "Ambil semua pengguna",
+                "responses": {
+                    "200": {
+                        "description": "Daftar pengguna",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/modelpostgre.User"
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Gagal mengambil pengguna",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": true
+                        }
+                    }
+                }
+            },
+            "post": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "description": "Membuat pengguna baru dengan peran tertentu.",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Users"
+                ],
+                "summary": "Buat pengguna baru",
+                "parameters": [
+                    {
+                        "description": "Informasi pengguna baru",
+                        "name": "createUserRequest",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/modelpostgre.CreateUserRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "Pengguna berhasil dibuat",
+                        "schema": {
+                            "$ref": "#/definitions/modelpostgre.User"
+                        }
+                    },
+                    "400": {
+                        "description": "Body request tidak valid / Peran tidak ditemukan",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": true
+                        }
+                    },
+                    "409": {
+                        "description": "Username atau Email sudah ada",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": true
+                        }
+                    },
+                    "500": {
+                        "description": "Gagal membuat pengguna",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": true
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/users/{id}": {
+            "get": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "description": "Mengambil satu pengguna berdasarkan ID mereka (UUID).",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Users"
+                ],
+                "summary": "Ambil pengguna berdasarkan ID",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "ID Pengguna (UUID)",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Pengguna ditemukan",
+                        "schema": {
+                            "$ref": "#/definitions/modelpostgre.User"
+                        }
+                    },
+                    "400": {
+                        "description": "Format ID Pengguna tidak valid",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": true
+                        }
+                    },
+                    "404": {
+                        "description": "Pengguna tidak ditemukan",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": true
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": true
+                        }
+                    }
+                }
+            },
+            "put": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "description": "Memperbarui detail pengguna (termasuk password dan peran opsional).",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Users"
+                ],
+                "summary": "Perbarui pengguna",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "ID Pengguna (UUID)",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "description": "Informasi pengguna yang diperbarui",
+                        "name": "updateUserRequest",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/modelpostgre.UpdateUserRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Pengguna berhasil diperbarui",
+                        "schema": {
+                            "$ref": "#/definitions/modelpostgre.User"
+                        }
+                    },
+                    "400": {
+                        "description": "Format ID tidak valid / Body request tidak valid / Peran tidak ditemukan",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": true
+                        }
+                    },
+                    "404": {
+                        "description": "Pengguna tidak ditemukan",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": true
+                        }
+                    },
+                    "500": {
+                        "description": "Gagal memperbarui pengguna",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": true
+                        }
+                    }
+                }
+            },
+            "delete": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "description": "Menghapus pengguna berdasarkan ID.",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Users"
+                ],
+                "summary": "Hapus pengguna",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "ID Pengguna (UUID)",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Pengguna berhasil dihapus",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Format ID tidak valid",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": true
+                        }
+                    },
+                    "404": {
+                        "description": "Pengguna tidak ditemukan",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": true
+                        }
+                    },
+                    "500": {
+                        "description": "Gagal menghapus pengguna",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": true
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/users/{id}/role": {
+            "patch": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "description": "Memperbarui peran (Role) dari pengguna tertentu.",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Users"
+                ],
+                "summary": "Perbarui peran pengguna",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "ID Pengguna (UUID)",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "description": "Nama Peran Baru",
+                        "name": "updateUserRoleRequest",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/modelpostgre.UpdateUserRoleRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Peran pengguna berhasil diperbarui",
+                        "schema": {
+                            "$ref": "#/definitions/modelpostgre.User"
+                        }
+                    },
+                    "400": {
+                        "description": "Format ID tidak valid / Body request tidak valid / Peran tidak ditemukan",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": true
+                        }
+                    },
+                    "404": {
+                        "description": "Pengguna tidak ditemukan",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": true
+                        }
+                    },
+                    "500": {
+                        "description": "Gagal memperbarui peran pengguna",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": true
+                        }
+                    }
+                }
+            }
+        }
+    },
+    "definitions": {
+        "modelmongo.Achievement": {
+            "type": "object",
+            "properties": {
+                "achievementType": {
+                    "$ref": "#/definitions/modelmongo.AchievementType"
+                },
+                "attachments": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/modelmongo.Attachment"
+                    }
+                },
+                "createdAt": {
+                    "type": "string"
+                },
+                "description": {
+                    "type": "string"
+                },
+                "details": {
+                    "$ref": "#/definitions/modelmongo.AchievementDetails"
+                },
+                "id": {
+                    "type": "string"
+                },
+                "isDeleted": {
+                    "type": "boolean"
+                },
+                "points": {
+                    "type": "integer"
+                },
+                "studentID": {
+                    "type": "string"
+                },
+                "tags": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
+                },
+                "title": {
+                    "type": "string"
+                },
+                "updatedAt": {
+                    "type": "string"
+                }
+            }
+        },
+        "modelmongo.AchievementDetails": {
+            "type": "object",
+            "properties": {
+                "authors": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
+                },
+                "certificationName": {
+                    "type": "string"
+                },
+                "certificationNumber": {
+                    "type": "string"
+                },
+                "competitionLevel": {
+                    "$ref": "#/definitions/modelmongo.CompetitionLevel"
+                },
+                "competitionName": {
+                    "type": "string"
+                },
+                "customFields": {
+                    "type": "object",
+                    "additionalProperties": true
+                },
+                "eventDate": {
+                    "type": "string"
+                },
+                "issn": {
+                    "type": "string"
+                },
+                "issuedBy": {
+                    "type": "string"
+                },
+                "location": {
+                    "type": "string"
+                },
+                "medalType": {
+                    "type": "string"
+                },
+                "organizationName": {
+                    "type": "string"
+                },
+                "organizer": {
+                    "type": "string"
+                },
+                "period": {
+                    "$ref": "#/definitions/modelmongo.Period"
+                },
+                "position": {
+                    "type": "string"
+                },
+                "publicationTitle": {
+                    "type": "string"
+                },
+                "publicationType": {
+                    "$ref": "#/definitions/modelmongo.PublicationType"
+                },
+                "publisher": {
+                    "type": "string"
+                },
+                "rank": {
+                    "type": "integer"
+                },
+                "score": {
+                    "type": "number"
+                },
+                "validUntil": {
+                    "type": "string"
+                }
+            }
+        },
+        "modelmongo.AchievementType": {
+            "type": "string",
+            "enum": [
+                "academic",
+                "competition",
+                "organization",
+                "publication",
+                "certification",
+                "other"
+            ],
+            "x-enum-varnames": [
+                "TypeAcademic",
+                "TypeCompetition",
+                "TypeOrganization",
+                "TypePublication",
+                "TypeCertification",
+                "TypeOther"
+            ]
+        },
+        "modelmongo.AchievementWithReference": {
+            "type": "object",
+            "properties": {
+                "achievement": {
+                    "$ref": "#/definitions/modelmongo.Achievement"
+                },
+                "created_at": {
+                    "type": "string"
+                },
+                "reference_id": {
+                    "type": "string"
+                },
+                "rejection_note": {
+                    "type": "string"
+                },
+                "status": {
+                    "type": "string"
+                },
+                "submitted_at": {
+                    "type": "string"
+                },
+                "updated_at": {
+                    "type": "string"
+                },
+                "verified_at": {
+                    "type": "string"
+                },
+                "verified_by": {
+                    "type": "string"
+                }
+            }
+        },
+        "modelmongo.Attachment": {
+            "type": "object",
+            "properties": {
+                "fileName": {
+                    "type": "string"
+                },
+                "fileSize": {
+                    "type": "integer"
+                },
+                "fileType": {
+                    "type": "string"
+                },
+                "fileURL": {
+                    "type": "string"
+                },
+                "uploadedAt": {
+                    "type": "string"
+                }
+            }
+        },
+        "modelmongo.CompetitionLevel": {
+            "type": "string",
+            "enum": [
+                "international",
+                "national",
+                "regional",
+                "local"
+            ],
+            "x-enum-varnames": [
+                "LevelInternational",
+                "LevelNational",
+                "LevelRegional",
+                "LevelLocal"
+            ]
+        },
+        "modelmongo.Period": {
+            "type": "object",
+            "properties": {
+                "end": {
+                    "type": "string"
+                },
+                "start": {
+                    "type": "string"
+                }
+            }
+        },
+        "modelmongo.PublicationType": {
+            "type": "string",
+            "enum": [
+                "journal",
+                "conference",
+                "book"
+            ],
+            "x-enum-varnames": [
+                "PubJournal",
+                "PubConference",
+                "PubBook"
+            ]
+        },
+        "modelmongo.UpdateAchievementRequest": {
+            "type": "object",
+            "properties": {
+                "achievement_type": {
+                    "$ref": "#/definitions/modelmongo.AchievementType"
+                },
+                "description": {
+                    "type": "string"
+                },
+                "details": {
+                    "$ref": "#/definitions/modelmongo.AchievementDetails"
+                },
+                "points": {
+                    "type": "integer"
+                },
+                "tags": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
+                },
+                "title": {
+                    "type": "string"
+                }
+            }
+        },
+        "modelpostgre.AchievementHistory": {
+            "type": "object",
+            "properties": {
+                "achievement_ref_id": {
+                    "type": "string"
+                },
+                "changed_by_user_id": {
+                    "type": "string"
+                },
+                "created_at": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "string"
+                },
+                "new_status": {
+                    "$ref": "#/definitions/modelpostgre.AchievementStatus"
+                },
+                "note": {
+                    "type": "string"
+                },
+                "previous_status": {
+                    "$ref": "#/definitions/modelpostgre.AchievementStatus"
+                }
+            }
+        },
+        "modelpostgre.AchievementReference": {
+            "type": "object",
+            "properties": {
+                "created_at": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "string"
+                },
+                "mongo_achievement_id": {
+                    "type": "string"
+                },
+                "rejection_note": {
+                    "type": "string"
+                },
+                "status": {
+                    "$ref": "#/definitions/modelpostgre.AchievementStatus"
+                },
+                "student_id": {
+                    "type": "string"
+                },
+                "submitted_at": {
+                    "type": "string"
+                },
+                "updated_at": {
+                    "type": "string"
+                },
+                "verified_at": {
+                    "type": "string"
+                },
+                "verified_by": {
+                    "type": "string"
+                }
+            }
+        },
+        "modelpostgre.AchievementStatus": {
+            "type": "string",
+            "enum": [
+                "draft",
+                "submitted",
+                "verified",
+                "rejected"
+            ],
+            "x-enum-varnames": [
+                "StatusDraft",
+                "StatusSubmitted",
+                "StatusVerified",
+                "StatusRejected"
+            ]
+        },
+        "modelpostgre.AddRolePermissionRequest": {
+            "type": "object",
+            "required": [
+                "permission_id",
+                "role_id"
+            ],
+            "properties": {
+                "permission_id": {
+                    "type": "string"
+                },
+                "role_id": {
+                    "type": "string"
+                }
+            }
+        },
+        "modelpostgre.CompetitionLevelStatistic": {
+            "type": "object",
+            "properties": {
+                "count": {
+                    "type": "integer"
+                },
+                "level": {
+                    "type": "string"
+                }
+            }
+        },
+        "modelpostgre.CreateAchievementRefRequest": {
+            "type": "object",
+            "required": [
+                "mongo_achievement_id"
+            ],
+            "properties": {
+                "mongo_achievement_id": {
+                    "type": "string"
+                }
+            }
+        },
+        "modelpostgre.CreateLecturerRequest": {
+            "type": "object",
+            "required": [
+                "department",
+                "lecturer_id",
+                "user_id"
+            ],
+            "properties": {
+                "department": {
+                    "type": "string"
+                },
+                "lecturer_id": {
+                    "type": "string"
+                },
+                "user_id": {
+                    "type": "string"
+                }
+            }
+        },
+        "modelpostgre.CreatePermissionRequest": {
+            "type": "object",
+            "properties": {
+                "action": {
+                    "type": "string"
+                },
+                "description": {
+                    "type": "string"
+                },
+                "name": {
+                    "type": "string"
+                },
+                "resource": {
+                    "type": "string"
+                }
+            }
+        },
+        "modelpostgre.CreateRoleRequest": {
+            "type": "object",
+            "properties": {
+                "description": {
+                    "type": "string"
+                },
+                "name": {
+                    "type": "string"
+                }
+            }
+        },
+        "modelpostgre.CreateStudentRequest": {
+            "type": "object",
+            "required": [
+                "academic_year",
+                "program_study",
+                "student_id",
+                "user_id"
+            ],
+            "properties": {
+                "academic_year": {
+                    "type": "string"
+                },
+                "advisor_id": {
+                    "type": "string"
+                },
+                "program_study": {
+                    "type": "string"
+                },
+                "student_id": {
+                    "type": "string"
+                },
+                "user_id": {
+                    "type": "string"
+                }
+            }
+        },
+        "modelpostgre.CreateUserRequest": {
+            "type": "object",
+            "properties": {
+                "email": {
+                    "type": "string"
+                },
+                "full_name": {
+                    "type": "string"
+                },
+                "is_active": {
+                    "type": "boolean"
+                },
+                "password": {
+                    "type": "string"
+                },
+                "role_name": {
+                    "type": "string"
+                },
+                "username": {
+                    "type": "string"
+                }
+            }
+        },
+        "modelpostgre.Lecturer": {
+            "type": "object",
+            "properties": {
+                "created_at": {
+                    "type": "string"
+                },
+                "department": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "string"
+                },
+                "lecturer_id": {
+                    "type": "string"
+                },
+                "user_id": {
+                    "type": "string"
+                }
+            }
+        },
+        "modelpostgre.LoginRequest": {
+            "type": "object",
+            "properties": {
+                "identity": {
+                    "type": "string"
+                },
+                "password": {
+                    "type": "string"
+                }
+            }
+        },
+        "modelpostgre.LoginResponse": {
+            "type": "object",
+            "properties": {
+                "refresh_token": {
+                    "type": "string"
+                },
+                "token": {
+                    "type": "string"
+                },
+                "user": {
+                    "$ref": "#/definitions/modelpostgre.User"
+                }
+            }
+        },
+        "modelpostgre.PeriodStatistic": {
+            "type": "object",
+            "properties": {
+                "count": {
+                    "type": "integer"
+                },
+                "period": {
+                    "type": "string"
+                }
+            }
+        },
+        "modelpostgre.Permission": {
+            "type": "object",
+            "properties": {
+                "action": {
+                    "type": "string"
+                },
+                "description": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "string"
+                },
+                "name": {
+                    "type": "string"
+                },
+                "resource": {
+                    "type": "string"
+                }
+            }
+        },
+        "modelpostgre.Role": {
+            "type": "object",
+            "properties": {
+                "created_at": {
+                    "type": "string"
+                },
+                "description": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "string"
+                },
+                "name": {
+                    "type": "string"
+                }
+            }
+        },
+        "modelpostgre.RolePermission": {
+            "type": "object",
+            "properties": {
+                "permission_id": {
+                    "type": "string"
+                },
+                "role_id": {
+                    "type": "string"
+                }
+            }
+        },
+        "modelpostgre.StatisticsResponse": {
+            "type": "object",
+            "properties": {
+                "achievements_by_period": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/modelpostgre.PeriodStatistic"
+                    }
+                },
+                "achievements_by_status": {
+                    "type": "object",
+                    "additionalProperties": {
+                        "type": "integer"
+                    }
+                },
+                "achievements_by_type": {
+                    "type": "object",
+                    "additionalProperties": {
+                        "type": "integer"
+                    }
+                },
+                "competition_distribution": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/modelpostgre.CompetitionLevelStatistic"
+                    }
+                },
+                "top_students": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/modelpostgre.TopStudent"
+                    }
+                },
+                "total_achievements": {
+                    "type": "integer"
+                }
+            }
+        },
+        "modelpostgre.Student": {
+            "type": "object",
+            "properties": {
+                "academic_year": {
+                    "type": "string"
+                },
+                "advisor_id": {
+                    "type": "string"
+                },
+                "created_at": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "string"
+                },
+                "program_study": {
+                    "type": "string"
+                },
+                "student_id": {
+                    "type": "string"
+                },
+                "user_id": {
+                    "type": "string"
+                }
+            }
+        },
+        "modelpostgre.TopStudent": {
+            "type": "object",
+            "properties": {
+                "achievement_count": {
+                    "type": "integer"
+                },
+                "program_study": {
+                    "type": "string"
+                },
+                "student_id": {
+                    "type": "string"
+                },
+                "student_name": {
+                    "type": "string"
+                },
+                "total_points": {
+                    "type": "integer"
+                }
+            }
+        },
+        "modelpostgre.UpdateAdvisorRequest": {
+            "type": "object",
+            "required": [
+                "advisor_id"
+            ],
+            "properties": {
+                "advisor_id": {
+                    "type": "string"
+                }
+            }
+        },
+        "modelpostgre.UpdateLecturerRequest": {
+            "type": "object",
+            "properties": {
+                "department": {
+                    "type": "string"
+                },
+                "lecturer_id": {
+                    "type": "string"
+                }
+            }
+        },
+        "modelpostgre.UpdatePermissionRequest": {
+            "type": "object",
+            "properties": {
+                "action": {
+                    "type": "string"
+                },
+                "description": {
+                    "type": "string"
+                },
+                "name": {
+                    "type": "string"
+                },
+                "resource": {
+                    "type": "string"
+                }
+            }
+        },
+        "modelpostgre.UpdateRoleRequest": {
+            "type": "object",
+            "properties": {
+                "description": {
+                    "type": "string"
+                },
+                "name": {
+                    "type": "string"
+                }
+            }
+        },
+        "modelpostgre.UpdateStudentRequest": {
+            "type": "object",
+            "properties": {
+                "academic_year": {
+                    "type": "string"
+                },
+                "advisor_id": {
+                    "type": "string"
+                },
+                "program_study": {
+                    "type": "string"
+                },
+                "student_id": {
+                    "type": "string"
+                }
+            }
+        },
+        "modelpostgre.UpdateUserRequest": {
+            "type": "object",
+            "properties": {
+                "email": {
+                    "type": "string"
+                },
+                "full_name": {
+                    "type": "string"
+                },
+                "is_active": {
+                    "type": "boolean"
+                },
+                "password": {
+                    "type": "string"
+                },
+                "role_name": {
+                    "type": "string"
+                },
+                "username": {
+                    "type": "string"
+                }
+            }
+        },
+        "modelpostgre.UpdateUserRoleRequest": {
+            "type": "object",
+            "properties": {
+                "role_name": {
+                    "type": "string"
+                }
+            }
+        },
+        "modelpostgre.User": {
+            "type": "object",
+            "properties": {
+                "created_at": {
+                    "type": "string"
+                },
+                "email": {
+                    "type": "string"
+                },
+                "full_name": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "string"
+                },
+                "is_active": {
+                    "type": "boolean"
+                },
+                "password_hash": {
+                    "type": "string"
+                },
+                "role_id": {
+                    "type": "string"
+                },
+                "updated_at": {
+                    "type": "string"
+                },
+                "username": {
+                    "type": "string"
+                }
+            }
+        },
+        "modelpostgre.VerificationRequest": {
+            "type": "object",
+            "properties": {
+                "rejection_note": {
+                    "type": "string"
+                }
+            }
+        }
+    },
+    "securityDefinitions": {
+        "ApiKeyAuth": {
+            "type": "apiKey",
+            "name": "Authorization",
+            "in": "header"
+        }
+    }
+}

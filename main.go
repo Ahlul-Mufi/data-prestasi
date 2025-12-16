@@ -4,6 +4,8 @@ import (
 	"log"
 	"os"
 
+	_ "github.com/Ahlul-Mufi/data-prestasi/docs"
+
 	repomongo "github.com/Ahlul-Mufi/data-prestasi/app/repository/mongo"
 	repositorypostgre "github.com/Ahlul-Mufi/data-prestasi/app/repository/postgre"
 	servicepostgre "github.com/Ahlul-Mufi/data-prestasi/app/service/postgre"
@@ -14,7 +16,19 @@ import (
 	"github.com/gofiber/fiber/v2/middleware/cors"
 	"github.com/gofiber/fiber/v2/middleware/logger"
 	"github.com/joho/godotenv"
+	fiberSwagger "github.com/swaggo/fiber-swagger"
 )
+
+// @title Data Prestasi API
+// @version 1.0
+// @description API Backend Data Prestasi (PostgreSQL & MongoDB)
+// @host localhost:3000
+// @BasePath /
+// @schemes http
+
+// @securityDefinitions.apikey ApiKeyAuth
+// @in header
+// @name Authorization
 
 func main() {
 	if err := godotenv.Load(); err != nil {
@@ -24,10 +38,12 @@ func main() {
 	database.ConnectDB()
 	defer database.DisconnectDB()
 
-	app := fiber.New(fiber.Config{})
+	app := fiber.New()
 
 	app.Use(cors.New())
 	app.Use(logger.New())
+
+	app.Get("/swagger/*", fiberSwagger.WrapHandler)
 
 	userRepo := repositorypostgre.NewUserRepository(database.DB)
 	roleRepo := repositorypostgre.NewRoleRepository(database.DB)
@@ -80,5 +96,6 @@ func main() {
 	}
 
 	log.Printf("🚀 Server starting on port %s", port)
+	log.Printf("Swagger UI tersedia di http://localhost:3000/swagger/index.html")
 	log.Fatal(app.Listen(":" + port))
 }
