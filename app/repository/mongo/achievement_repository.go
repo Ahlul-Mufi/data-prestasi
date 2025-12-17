@@ -23,6 +23,7 @@ type AchievementRepository interface {
 	Update(id primitive.ObjectID, achievement m.Achievement) (m.Achievement, error)
 	SoftDelete(id primitive.ObjectID) error
 	GetAll(filter bson.M, skip, limit int64) ([]m.Achievement, int64, error)
+	AddAttachment(id primitive.ObjectID, attachment m.Attachment) error
 }
 
 type achievementRepository struct {
@@ -229,24 +230,12 @@ func (r *achievementRepository) AddAttachment(id primitive.ObjectID, attachment 
 	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
 	defer cancel()
 
-	filter := bson.M{
-		"_id":       id,
-		"isDeleted": false,
-	}
-
+	filter := bson.M{"_id": id}
 	update := bson.M{
 		"$push": bson.M{"attachments": attachment},
 		"$set":  bson.M{"updatedAt": time.Now()},
 	}
 
-	result, err := r.collection.UpdateOne(ctx, filter, update)
-	if err != nil {
-		return err
-	}
-
-	if result.MatchedCount == 0 {
-		return errors.New("achievement not found")
-	}
-
-	return nil
+	_, err := r.collection.UpdateOne(ctx, filter, update)
+	return err
 }

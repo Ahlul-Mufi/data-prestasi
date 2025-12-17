@@ -22,7 +22,8 @@ type AchievementReferenceService interface {
 	Update(c *fiber.Ctx) error
 	Delete(c *fiber.Ctx) error
 	Submit(c *fiber.Ctx) error
-
+	UploadAttachment(c *fiber.Ctx) error
+	
 	GetPendingAchievements(c *fiber.Ctx) error
 	GetAdviseeAchievements(c *fiber.Ctx) error
 	Verify(c *fiber.Ctx) error
@@ -747,4 +748,45 @@ func (s *achievementReferenceService) GetHistory(c *fiber.Ctx) error {
 	}
 
 	return helper.SuccessResponse(c, fiber.StatusOK, histories)
+}
+
+func (s *achievementReferenceService) UploadAttachment(c *fiber.Ctx) error {
+	idStr := c.Params("id")
+	refID, err := uuid.Parse(idStr)
+	if err != nil {
+		return helper.ErrorResponse(c, fiber.StatusBadRequest, "Invalid ID format", "The provided UUID is not valid")
+	}
+
+	ref, err := s.postgresRepo.GetByID(refID)
+	if err != nil {
+		return helper.ErrorResponse(c, fiber.StatusNotFound, "Achievement not found", "Could not find achievement with given ID")
+	}
+
+	file, err := c.FormFile("document")
+	if err != nil {
+		return helper.ErrorResponse(c, fiber.StatusBadRequest, "No file uploaded", err.Error())
+	}
+
+	filePath := "./uploads/" + file.Filename
+	if err := c.SaveFile(file, filePath); err != nil {
+		return helper.ErrorResponse(c, fiber.StatusInternalServerError, "Failed to save file", err.Error())
+	}
+
+	objID, _ := primitive.ObjectIDFromHex(ref.MongoAchievementID)
+	attachment := modelmongo.Attachment{
+		FileName:   file.Filename,
+		FileURL:    filePath,
+		FileType:   file.Header.Get("Content-Type"),
+		FileSize:   file.Size,
+		UploadedAt: time.Now(),
+	}
+
+	if err := s.mongoRepo.AddAttachment(objID, attachment); err != nil {
+		return helper.ErrorResponse(c, fiber.StatusInternalServerError, "Failed to update database", err.Error())
+	}
+
+	return c.Status(fiber.StatusOK).JSON(fiber.Map{
+		"message": "Document uploaded successfully",
+		"data":    attachment,
+	})
 }

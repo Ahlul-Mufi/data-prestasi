@@ -17,6 +17,7 @@ func SetupAchievementReferenceRoutes(api fiber.Router, arService servicepostgre.
 	arGroup.Put("/:id", mw.AuthMiddleware(), arService.Update)
 	arGroup.Delete("/:id", mw.AuthMiddleware(), arService.Delete)
 	arGroup.Post("/:id/submit", mw.AuthMiddleware(), arService.Submit)
+	arGroup.Post("/:id/attachments", mw.AuthMiddleware(), arService.UploadAttachment)
 
 	arGroup.Get("/pending",
 		mw.AuthMiddleware(),
