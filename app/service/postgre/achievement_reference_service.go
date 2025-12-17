@@ -72,7 +72,7 @@ func (s *achievementReferenceService) getStudentProfile(userID uuid.UUID) (m.Stu
 // @Summary Buat Referensi Prestasi
 // @Description Membuat referensi prestasi baru untuk mahasiswa yang sedang login.
 // @Tags Achievement References (Student)
-// @Security ApiKeyAuth
+// @Security BearerAuth
 // @Accept json
 // @Produce json
 // @Param createARRequest body modelpostgre.CreateAchievementRefRequest true "Detail Referensi Prestasi"
@@ -152,7 +152,7 @@ func (s *achievementReferenceService) Create(c *fiber.Ctx) error {
 // @Summary Ambil Referensi Prestasi berdasarkan ID
 // @Description Mengambil detail referensi prestasi berdasarkan ID (UUID).
 // @Tags Achievement References (Common)
-// @Security ApiKeyAuth
+// @Security BearerAuth
 // @Produce json
 // @Param id path string true "ID Referensi Prestasi (UUID)"
 // @Success 200 {object} modelmongo.AchievementWithReference "Referensi ditemukan"
@@ -203,7 +203,7 @@ func (s *achievementReferenceService) GetByID(c *fiber.Ctx) error {
 // @Summary Ambil Semua Prestasi Saya
 // @Description Mengambil semua referensi prestasi yang dibuat oleh mahasiswa yang sedang login.
 // @Tags Achievement References (Student)
-// @Security ApiKeyAuth
+// @Security BearerAuth
 // @Produce json
 // @Success 200 {array} modelmongo.AchievementWithReference "Daftar prestasi saya"
 // @Failure 404 {object} map[string]interface{} "Mahasiswa tidak ditemukan"
@@ -266,7 +266,7 @@ func (s *achievementReferenceService) GetMyAchievements(c *fiber.Ctx) error {
 // @Summary Submit Referensi Prestasi
 // @Description Mengubah status referensi prestasi dari 'Draft' menjadi 'Pending'.
 // @Tags Achievement References (Student)
-// @Security ApiKeyAuth
+// @Security BearerAuth
 // @Produce json
 // @Param id path string true "ID Referensi Prestasi (UUID)"
 // @Success 200 {object} modelpostgre.AchievementReference "Referensi berhasil disubmit"
@@ -332,7 +332,7 @@ func (s *achievementReferenceService) Submit(c *fiber.Ctx) error {
 // @Summary Perbarui Referensi Prestasi
 // @Description Memperbarui detail referensi prestasi. Hanya bisa dilakukan pada status 'Draft'.
 // @Tags Achievement References (Student)
-// @Security ApiKeyAuth
+// @Security BearerAuth
 // @Accept json
 // @Produce json
 // @Param id path string true "ID Referensi Prestasi (UUID)"
@@ -428,7 +428,7 @@ func (s *achievementReferenceService) Update(c *fiber.Ctx) error {
 // @Summary Hapus Referensi Prestasi
 // @Description Menghapus referensi prestasi berdasarkan ID. Hanya bisa dilakukan pada status 'Draft'.
 // @Tags Achievement References (Student)
-// @Security ApiKeyAuth
+// @Security BearerAuth
 // @Produce json
 // @Param id path string true "ID Referensi Prestasi (UUID)"
 // @Success 200 {object} map[string]interface{} "Referensi berhasil dihapus"
@@ -484,7 +484,7 @@ func (s *achievementReferenceService) Delete(c *fiber.Ctx) error {
 // @Summary Ambil Prestasi Pending
 // @Description Mengambil daftar semua referensi prestasi dengan status 'Pending' untuk diverifikasi (Role Verifikator).
 // @Tags Achievement References (Verifier)
-// @Security ApiKeyAuth
+// @Security BearerAuth
 // @Produce json
 // @Success 200 {array} modelmongo.AchievementWithReference "Daftar prestasi pending"
 // @Failure 500 {object} map[string]interface{} "Gagal mengambil prestasi pending"
@@ -534,7 +534,7 @@ func (s *achievementReferenceService) GetPendingAchievements(c *fiber.Ctx) error
 // @Summary Ambil Prestasi Bimbingan Dosen
 // @Description Mengambil daftar prestasi dari mahasiswa yang dibimbing (Role Dosen).
 // @Tags Achievement References (Lecturer)
-// @Security ApiKeyAuth
+// @Security BearerAuth
 // @Produce json
 // @Success 200 {object} modelpostgre.AchievementReference "Prestasi berhasil diverifikasi"
 // @Failure 404 {object} map[string]interface{} "Dosen tidak ditemukan"
@@ -547,7 +547,7 @@ func (s *achievementReferenceService) GetAdviseeAchievements(c *fiber.Ctx) error
 // @Summary Verifikasi Prestasi
 // @Description Mengubah status referensi prestasi dari 'Pending' menjadi 'Verified' (Role Verifikator).
 // @Tags Achievement References (Verifier)
-// @Security ApiKeyAuth
+// @Security BearerAuth
 // @Produce json
 // @Param id path string true "ID Referensi Prestasi (UUID)"
 // @Success 200 {object} modelpostgre.AchievementReference "Prestasi berhasil diverifikasi"
@@ -597,7 +597,7 @@ func (s *achievementReferenceService) Verify(c *fiber.Ctx) error {
 // @Summary Tolak Prestasi
 // @Description Mengubah status referensi prestasi dari 'Pending' menjadi 'Rejected', memerlukan catatan penolakan (Role Verifikator).
 // @Tags Achievement References (Verifier)
-// @Security ApiKeyAuth
+// @Security BearerAuth
 // @Accept json
 // @Produce json
 // @Param id path string true "ID Referensi Prestasi (UUID)"
@@ -658,7 +658,7 @@ func (s *achievementReferenceService) Reject(c *fiber.Ctx) error {
 // @Summary Ambil Semua Prestasi (Admin/All)
 // @Description Mengambil daftar semua referensi prestasi tanpa batasan status (Role Admin/Umum).
 // @Tags Achievement References (Common)
-// @Security ApiKeyAuth
+// @Security BearerAuth
 // @Produce json
 // @Success 200 {array} modelmongo.AchievementWithReference "Daftar semua prestasi"
 // @Failure 500 {object} map[string]interface{} "Gagal mengambil semua prestasi"
@@ -718,7 +718,7 @@ func (s *achievementReferenceService) GetAllAchievements(c *fiber.Ctx) error {
 // @Summary Ambil Histori Referensi Prestasi
 // @Description Mengambil data historis (audit) dari perubahan status referensi prestasi tertentu.
 // @Tags Achievement References (Common)
-// @Security ApiKeyAuth
+// @Security BearerAuth
 // @Produce json
 // @Param id path string true "ID Referensi Prestasi (UUID)"
 // @Success 200 {array} modelpostgre.AchievementHistory "Histori referensi ditemukan"

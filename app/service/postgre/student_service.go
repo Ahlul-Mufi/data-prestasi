@@ -34,7 +34,7 @@ func NewStudentService(r repo.StudentRepository, arRepo repo.AchievementReferenc
 // @Summary Ambil semua Mahasiswa
 // @Description Mengambil daftar semua profil mahasiswa.
 // @Tags Students
-// @Security ApiKeyAuth
+// @Security BearerAuth
 // @Produce json
 // @Success 200 {array} modelpostgre.Student "Daftar mahasiswa"
 // @Failure 500 {object} map[string]interface{} "Gagal mengambil data mahasiswa"
@@ -50,7 +50,7 @@ func (s *studentService) GetAll(c *fiber.Ctx) error {
 // @Summary Ambil Mahasiswa berdasarkan ID
 // @Description Mengambil detail profil mahasiswa berdasarkan ID (UUID).
 // @Tags Students
-// @Security ApiKeyAuth
+// @Security BearerAuth
 // @Produce json
 // @Param id path string true "ID Pengguna Mahasiswa (UUID)"
 // @Success 200 {object} modelpostgre.Student "Mahasiswa ditemukan"
@@ -77,7 +77,7 @@ func (s *studentService) GetByID(c *fiber.Ctx) error {
 // @Summary Ambil Prestasi Mahasiswa
 // @Description Mengambil daftar semua prestasi (Achievement References) yang dimiliki oleh mahasiswa tertentu.
 // @Tags Students
-// @Security ApiKeyAuth
+// @Security BearerAuth
 // @Produce json
 // @Param id path string true "ID Pengguna Mahasiswa (UUID)"
 // @Success 200 {array} modelpostgre.AchievementReference "Daftar prestasi mahasiswa"
@@ -109,7 +109,7 @@ func (s *studentService) GetAchievements(c *fiber.Ctx) error {
 // @Summary Buat profil Mahasiswa baru
 // @Description Membuat profil mahasiswa baru (Membutuhkan User ID yang sudah ada).
 // @Tags Students
-// @Security ApiKeyAuth
+// @Security BearerAuth
 // @Accept json
 // @Produce json
 // @Param createStudentRequest body m.CreateStudentRequest true "Detail Mahasiswa Baru"
@@ -156,7 +156,7 @@ func (s *studentService) CreateStudent(c *fiber.Ctx) error {
 // @Summary Perbarui profil Mahasiswa
 // @Description Memperbarui detail profil mahasiswa (NIM, Program Studi, Tahun Akademik).
 // @Tags Students
-// @Security ApiKeyAuth
+// @Security BearerAuth
 // @Accept json
 // @Produce json
 // @Param id path string true "ID Pengguna Mahasiswa (UUID)"
@@ -213,7 +213,7 @@ func (s *studentService) UpdateStudent(c *fiber.Ctx) error {
 // @Summary Hapus profil Mahasiswa
 // @Description Menghapus profil mahasiswa berdasarkan ID (UUID).
 // @Tags Students
-// @Security ApiKeyAuth
+// @Security BearerAuth
 // @Produce json
 // @Param id path string true "ID Pengguna Mahasiswa (UUID)"
 // @Success 200 {object} modelpostgre.Student "Profil mahasiswa berhasil dihapus"
@@ -241,7 +241,7 @@ func (s *studentService) DeleteStudent(c *fiber.Ctx) error {
 // @Summary Perbarui Dosen Pembimbing Mahasiswa
 // @Description Memperbarui Dosen Pembimbing (Advisor) untuk mahasiswa tertentu.
 // @Tags Students
-// @Security ApiKeyAuth
+// @Security BearerAuth
 // @Accept json
 // @Produce json
 // @Param id path string true "ID Pengguna Mahasiswa (UUID)"

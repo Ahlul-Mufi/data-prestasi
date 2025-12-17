@@ -1,12 +1,17 @@
 {
-    "schemes": [
-        "http"
-    ],
     "swagger": "2.0",
     "info": {
-        "description": "API Backend Data Prestasi (PostgreSQL \u0026 MongoDB)",
+        "description": "Dokumentasi API untuk aplikasi Data Prestasi.",
         "title": "Data Prestasi API",
-        "contact": {},
+        "termsOfService": "http://swagger.io/terms/",
+        "contact": {
+            "name": "Ahlul Mufi",
+            "email": "ahlulmufi@gmail.com"
+        },
+        "license": {
+            "name": "Apache 2.0",
+            "url": "http://www.apache.org/licenses/LICENSE-2.0.html"
+        },
         "version": "1.0"
     },
     "host": "localhost:3000",
@@ -16,7 +21,7 @@
             "get": {
                 "security": [
                     {
-                        "ApiKeyAuth": []
+                        "BearerAuth": []
                     }
                 ],
                 "description": "Mengambil daftar semua referensi prestasi tanpa batasan status (Role Admin/Umum).",
@@ -49,7 +54,7 @@
             "post": {
                 "security": [
                     {
-                        "ApiKeyAuth": []
+                        "BearerAuth": []
                     }
                 ],
                 "description": "Membuat referensi prestasi baru untuk mahasiswa yang sedang login.",
@@ -109,7 +114,7 @@
             "get": {
                 "security": [
                     {
-                        "ApiKeyAuth": []
+                        "BearerAuth": []
                     }
                 ],
                 "description": "Mengambil daftar prestasi dari mahasiswa yang dibimbing (Role Dosen).",
@@ -148,7 +153,7 @@
             "get": {
                 "security": [
                     {
-                        "ApiKeyAuth": []
+                        "BearerAuth": []
                     }
                 ],
                 "description": "Mengambil semua referensi prestasi yang dibuat oleh mahasiswa yang sedang login.",
@@ -190,7 +195,7 @@
             "get": {
                 "security": [
                     {
-                        "ApiKeyAuth": []
+                        "BearerAuth": []
                     }
                 ],
                 "description": "Mengambil daftar semua referensi prestasi dengan status 'Pending' untuk diverifikasi (Role Verifikator).",
@@ -225,7 +230,7 @@
             "get": {
                 "security": [
                     {
-                        "ApiKeyAuth": []
+                        "BearerAuth": []
                     }
                 ],
                 "description": "Mengambil detail referensi prestasi berdasarkan ID (UUID).",
@@ -278,7 +283,7 @@
             "put": {
                 "security": [
                     {
-                        "ApiKeyAuth": []
+                        "BearerAuth": []
                     }
                 ],
                 "description": "Memperbarui detail referensi prestasi. Hanya bisa dilakukan pada status 'Draft'.",
@@ -350,7 +355,7 @@
             "delete": {
                 "security": [
                     {
-                        "ApiKeyAuth": []
+                        "BearerAuth": []
                     }
                 ],
                 "description": "Menghapus referensi prestasi berdasarkan ID. Hanya bisa dilakukan pada status 'Draft'.",
@@ -413,7 +418,7 @@
             "get": {
                 "security": [
                     {
-                        "ApiKeyAuth": []
+                        "BearerAuth": []
                     }
                 ],
                 "description": "Mengambil data historis (audit) dari perubahan status referensi prestasi tertentu.",
@@ -471,7 +476,7 @@
             "patch": {
                 "security": [
                     {
-                        "ApiKeyAuth": []
+                        "BearerAuth": []
                     }
                 ],
                 "description": "Mengubah status referensi prestasi dari 'Pending' menjadi 'Rejected', memerlukan catatan penolakan (Role Verifikator).",
@@ -545,7 +550,7 @@
             "patch": {
                 "security": [
                     {
-                        "ApiKeyAuth": []
+                        "BearerAuth": []
                     }
                 ],
                 "description": "Mengubah status referensi prestasi dari 'Draft' menjadi 'Pending'.",
@@ -607,7 +612,7 @@
             "patch": {
                 "security": [
                     {
-                        "ApiKeyAuth": []
+                        "BearerAuth": []
                     }
                 ],
                 "description": "Mengubah status referensi prestasi dari 'Pending' menjadi 'Verified' (Role Verifikator).",
@@ -747,7 +752,7 @@
             "get": {
                 "security": [
                     {
-                        "ApiKeyAuth": []
+                        "BearerAuth": []
                     }
                 ],
                 "description": "Mengambil detail profil pengguna yang sudah terautentikasi.",
@@ -854,7 +859,7 @@
             "get": {
                 "security": [
                     {
-                        "ApiKeyAuth": []
+                        "BearerAuth": []
                     }
                 ],
                 "description": "Mengambil daftar semua profil dosen.",
@@ -887,7 +892,7 @@
             "post": {
                 "security": [
                     {
-                        "ApiKeyAuth": []
+                        "BearerAuth": []
                     }
                 ],
                 "description": "Membuat profil dosen baru (Membutuhkan User ID yang sudah ada).",
@@ -947,7 +952,7 @@
             "get": {
                 "security": [
                     {
-                        "ApiKeyAuth": []
+                        "BearerAuth": []
                     }
                 ],
                 "description": "Mengambil detail profil dosen berdasarkan ID (UUID).",
@@ -1000,7 +1005,7 @@
             "put": {
                 "security": [
                     {
-                        "ApiKeyAuth": []
+                        "BearerAuth": []
                     }
                 ],
                 "description": "Memperbarui detail profil dosen (NIDN, Departemen).",
@@ -1065,7 +1070,7 @@
             "delete": {
                 "security": [
                     {
-                        "ApiKeyAuth": []
+                        "BearerAuth": []
                     }
                 ],
                 "description": "Menghapus profil dosen berdasarkan ID (UUID).",
@@ -1120,7 +1125,7 @@
             "get": {
                 "security": [
                     {
-                        "ApiKeyAuth": []
+                        "BearerAuth": []
                     }
                 ],
                 "description": "Mengambil daftar mahasiswa yang dibimbing oleh dosen tertentu.",
@@ -1178,7 +1183,7 @@
             "get": {
                 "security": [
                     {
-                        "ApiKeyAuth": []
+                        "BearerAuth": []
                     }
                 ],
                 "description": "Mengambil daftar semua izin yang tersedia (Permission).",
@@ -1211,7 +1216,7 @@
             "post": {
                 "security": [
                     {
-                        "ApiKeyAuth": []
+                        "BearerAuth": []
                     }
                 ],
                 "description": "Membuat izin (Permission) baru.",
@@ -1264,7 +1269,7 @@
             "get": {
                 "security": [
                     {
-                        "ApiKeyAuth": []
+                        "BearerAuth": []
                     }
                 ],
                 "description": "Mengambil detail izin berdasarkan ID.",
@@ -1317,7 +1322,7 @@
             "put": {
                 "security": [
                     {
-                        "ApiKeyAuth": []
+                        "BearerAuth": []
                     }
                 ],
                 "description": "Memperbarui detail izin.",
@@ -1382,7 +1387,7 @@
             "delete": {
                 "security": [
                     {
-                        "ApiKeyAuth": []
+                        "BearerAuth": []
                     }
                 ],
                 "description": "Menghapus izin berdasarkan ID.",
@@ -1437,7 +1442,7 @@
             "post": {
                 "security": [
                     {
-                        "ApiKeyAuth": []
+                        "BearerAuth": []
                     }
                 ],
                 "description": "Menghubungkan izin tertentu dengan peran tertentu.",
@@ -1495,7 +1500,7 @@
             "delete": {
                 "security": [
                     {
-                        "ApiKeyAuth": []
+                        "BearerAuth": []
                     }
                 ],
                 "description": "Memutus hubungan izin dari peran tertentu.",
@@ -1555,7 +1560,7 @@
             "get": {
                 "security": [
                     {
-                        "ApiKeyAuth": []
+                        "BearerAuth": []
                     }
                 ],
                 "description": "Mengambil daftar semua peran yang tersedia.",
@@ -1588,7 +1593,7 @@
             "post": {
                 "security": [
                     {
-                        "ApiKeyAuth": []
+                        "BearerAuth": []
                     }
                 ],
                 "description": "Membuat peran baru.",
@@ -1641,7 +1646,7 @@
             "get": {
                 "security": [
                     {
-                        "ApiKeyAuth": []
+                        "BearerAuth": []
                     }
                 ],
                 "description": "Mengambil detail peran berdasarkan ID.",
@@ -1694,7 +1699,7 @@
             "put": {
                 "security": [
                     {
-                        "ApiKeyAuth": []
+                        "BearerAuth": []
                     }
                 ],
                 "description": "Memperbarui nama atau deskripsi peran.",
@@ -1759,7 +1764,7 @@
             "delete": {
                 "security": [
                     {
-                        "ApiKeyAuth": []
+                        "BearerAuth": []
                     }
                 ],
                 "description": "Menghapus peran berdasarkan ID.",
@@ -1814,7 +1819,7 @@
             "get": {
                 "security": [
                     {
-                        "ApiKeyAuth": []
+                        "BearerAuth": []
                     }
                 ],
                 "description": "Mengambil statistik umum dan ringkasan seluruh sistem.",
@@ -1846,7 +1851,7 @@
             "get": {
                 "security": [
                     {
-                        "ApiKeyAuth": []
+                        "BearerAuth": []
                     }
                 ],
                 "description": "Mengambil detail statistik prestasi untuk mahasiswa tertentu.",
@@ -1901,7 +1906,7 @@
             "get": {
                 "security": [
                     {
-                        "ApiKeyAuth": []
+                        "BearerAuth": []
                     }
                 ],
                 "description": "Mengambil daftar semua profil mahasiswa.",
@@ -1934,7 +1939,7 @@
             "post": {
                 "security": [
                     {
-                        "ApiKeyAuth": []
+                        "BearerAuth": []
                     }
                 ],
                 "description": "Membuat profil mahasiswa baru (Membutuhkan User ID yang sudah ada).",
@@ -1994,7 +1999,7 @@
             "get": {
                 "security": [
                     {
-                        "ApiKeyAuth": []
+                        "BearerAuth": []
                     }
                 ],
                 "description": "Mengambil detail profil mahasiswa berdasarkan ID (UUID).",
@@ -2047,7 +2052,7 @@
             "put": {
                 "security": [
                     {
-                        "ApiKeyAuth": []
+                        "BearerAuth": []
                     }
                 ],
                 "description": "Memperbarui detail profil mahasiswa (NIM, Program Studi, Tahun Akademik).",
@@ -2112,7 +2117,7 @@
             "delete": {
                 "security": [
                     {
-                        "ApiKeyAuth": []
+                        "BearerAuth": []
                     }
                 ],
                 "description": "Menghapus profil mahasiswa berdasarkan ID (UUID).",
@@ -2167,7 +2172,7 @@
             "get": {
                 "security": [
                     {
-                        "ApiKeyAuth": []
+                        "BearerAuth": []
                     }
                 ],
                 "description": "Mengambil daftar semua prestasi (Achievement References) yang dimiliki oleh mahasiswa tertentu.",
@@ -2225,7 +2230,7 @@
             "patch": {
                 "security": [
                     {
-                        "ApiKeyAuth": []
+                        "BearerAuth": []
                     }
                 ],
                 "description": "Memperbarui Dosen Pembimbing (Advisor) untuk mahasiswa tertentu.",
@@ -2292,7 +2297,7 @@
             "get": {
                 "security": [
                     {
-                        "ApiKeyAuth": []
+                        "BearerAuth": []
                     }
                 ],
                 "description": "Mengambil daftar semua pengguna (Akses Admin/Role tertentu diperlukan).",
@@ -2325,7 +2330,7 @@
             "post": {
                 "security": [
                     {
-                        "ApiKeyAuth": []
+                        "BearerAuth": []
                     }
                 ],
                 "description": "Membuat pengguna baru dengan peran tertentu.",
@@ -2385,7 +2390,7 @@
             "get": {
                 "security": [
                     {
-                        "ApiKeyAuth": []
+                        "BearerAuth": []
                     }
                 ],
                 "description": "Mengambil satu pengguna berdasarkan ID mereka (UUID).",
@@ -2438,7 +2443,7 @@
             "put": {
                 "security": [
                     {
-                        "ApiKeyAuth": []
+                        "BearerAuth": []
                     }
                 ],
                 "description": "Memperbarui detail pengguna (termasuk password dan peran opsional).",
@@ -2503,7 +2508,7 @@
             "delete": {
                 "security": [
                     {
-                        "ApiKeyAuth": []
+                        "BearerAuth": []
                     }
                 ],
                 "description": "Menghapus pengguna berdasarkan ID.",
@@ -2561,7 +2566,7 @@
             "patch": {
                 "security": [
                     {
-                        "ApiKeyAuth": []
+                        "BearerAuth": []
                     }
                 ],
                 "description": "Memperbarui peran (Role) dari pengguna tertentu.",
@@ -3419,7 +3424,7 @@
     },
     "securityDefinitions": {
         "BearerAuth": {
-            "description": "Type \"Bearer\" followed by a space and JWT token.",
+            "description": "Tuliskan \"Bearer \" diikuti dengan token JWT Anda.",
             "type": "apiKey",
             "name": "Authorization",
             "in": "header"

@@ -9,7 +9,15 @@ const docTemplate = `{
     "info": {
         "description": "{{escape .Description}}",
         "title": "{{.Title}}",
-        "contact": {},
+        "termsOfService": "http://swagger.io/terms/",
+        "contact": {
+            "name": "Ahlul Mufi",
+            "email": "ahlulmufi@gmail.com"
+        },
+        "license": {
+            "name": "Apache 2.0",
+            "url": "http://www.apache.org/licenses/LICENSE-2.0.html"
+        },
         "version": "{{.Version}}"
     },
     "host": "{{.Host}}",
@@ -19,7 +27,7 @@ const docTemplate = `{
             "get": {
                 "security": [
                     {
-                        "ApiKeyAuth": []
+                        "BearerAuth": []
                     }
                 ],
                 "description": "Mengambil daftar semua referensi prestasi tanpa batasan status (Role Admin/Umum).",
@@ -52,7 +60,7 @@ const docTemplate = `{
             "post": {
                 "security": [
                     {
-                        "ApiKeyAuth": []
+                        "BearerAuth": []
                     }
                 ],
                 "description": "Membuat referensi prestasi baru untuk mahasiswa yang sedang login.",
@@ -112,7 +120,7 @@ const docTemplate = `{
             "get": {
                 "security": [
                     {
-                        "ApiKeyAuth": []
+                        "BearerAuth": []
                     }
                 ],
                 "description": "Mengambil daftar prestasi dari mahasiswa yang dibimbing (Role Dosen).",
@@ -151,7 +159,7 @@ const docTemplate = `{
             "get": {
                 "security": [
                     {
-                        "ApiKeyAuth": []
+                        "BearerAuth": []
                     }
                 ],
                 "description": "Mengambil semua referensi prestasi yang dibuat oleh mahasiswa yang sedang login.",
@@ -193,7 +201,7 @@ const docTemplate = `{
             "get": {
                 "security": [
                     {
-                        "ApiKeyAuth": []
+                        "BearerAuth": []
                     }
                 ],
                 "description": "Mengambil daftar semua referensi prestasi dengan status 'Pending' untuk diverifikasi (Role Verifikator).",
@@ -228,7 +236,7 @@ const docTemplate = `{
             "get": {
                 "security": [
                     {
-                        "ApiKeyAuth": []
+                        "BearerAuth": []
                     }
                 ],
                 "description": "Mengambil detail referensi prestasi berdasarkan ID (UUID).",
@@ -281,7 +289,7 @@ const docTemplate = `{
             "put": {
                 "security": [
                     {
-                        "ApiKeyAuth": []
+                        "BearerAuth": []
                     }
                 ],
                 "description": "Memperbarui detail referensi prestasi. Hanya bisa dilakukan pada status 'Draft'.",
@@ -353,7 +361,7 @@ const docTemplate = `{
             "delete": {
                 "security": [
                     {
-                        "ApiKeyAuth": []
+                        "BearerAuth": []
                     }
                 ],
                 "description": "Menghapus referensi prestasi berdasarkan ID. Hanya bisa dilakukan pada status 'Draft'.",
@@ -416,7 +424,7 @@ const docTemplate = `{
             "get": {
                 "security": [
                     {
-                        "ApiKeyAuth": []
+                        "BearerAuth": []
                     }
                 ],
                 "description": "Mengambil data historis (audit) dari perubahan status referensi prestasi tertentu.",
@@ -474,7 +482,7 @@ const docTemplate = `{
             "patch": {
                 "security": [
                     {
-                        "ApiKeyAuth": []
+                        "BearerAuth": []
                     }
                 ],
                 "description": "Mengubah status referensi prestasi dari 'Pending' menjadi 'Rejected', memerlukan catatan penolakan (Role Verifikator).",
@@ -548,7 +556,7 @@ const docTemplate = `{
             "patch": {
                 "security": [
                     {
-                        "ApiKeyAuth": []
+                        "BearerAuth": []
                     }
                 ],
                 "description": "Mengubah status referensi prestasi dari 'Draft' menjadi 'Pending'.",
@@ -610,7 +618,7 @@ const docTemplate = `{
             "patch": {
                 "security": [
                     {
-                        "ApiKeyAuth": []
+                        "BearerAuth": []
                     }
                 ],
                 "description": "Mengubah status referensi prestasi dari 'Pending' menjadi 'Verified' (Role Verifikator).",
@@ -750,7 +758,7 @@ const docTemplate = `{
             "get": {
                 "security": [
                     {
-                        "ApiKeyAuth": []
+                        "BearerAuth": []
                     }
                 ],
                 "description": "Mengambil detail profil pengguna yang sudah terautentikasi.",
@@ -857,7 +865,7 @@ const docTemplate = `{
             "get": {
                 "security": [
                     {
-                        "ApiKeyAuth": []
+                        "BearerAuth": []
                     }
                 ],
                 "description": "Mengambil daftar semua profil dosen.",
@@ -890,7 +898,7 @@ const docTemplate = `{
             "post": {
                 "security": [
                     {
-                        "ApiKeyAuth": []
+                        "BearerAuth": []
                     }
                 ],
                 "description": "Membuat profil dosen baru (Membutuhkan User ID yang sudah ada).",
@@ -950,7 +958,7 @@ const docTemplate = `{
             "get": {
                 "security": [
                     {
-                        "ApiKeyAuth": []
+                        "BearerAuth": []
                     }
                 ],
                 "description": "Mengambil detail profil dosen berdasarkan ID (UUID).",
@@ -1003,7 +1011,7 @@ const docTemplate = `{
             "put": {
                 "security": [
                     {
-                        "ApiKeyAuth": []
+                        "BearerAuth": []
                     }
                 ],
                 "description": "Memperbarui detail profil dosen (NIDN, Departemen).",
@@ -1068,7 +1076,7 @@ const docTemplate = `{
             "delete": {
                 "security": [
                     {
-                        "ApiKeyAuth": []
+                        "BearerAuth": []
                     }
                 ],
                 "description": "Menghapus profil dosen berdasarkan ID (UUID).",
@@ -1123,7 +1131,7 @@ const docTemplate = `{
             "get": {
                 "security": [
                     {
-                        "ApiKeyAuth": []
+                        "BearerAuth": []
                     }
                 ],
                 "description": "Mengambil daftar mahasiswa yang dibimbing oleh dosen tertentu.",
@@ -1181,7 +1189,7 @@ const docTemplate = `{
             "get": {
                 "security": [
                     {
-                        "ApiKeyAuth": []
+                        "BearerAuth": []
                     }
                 ],
                 "description": "Mengambil daftar semua izin yang tersedia (Permission).",
@@ -1214,7 +1222,7 @@ const docTemplate = `{
             "post": {
                 "security": [
                     {
-                        "ApiKeyAuth": []
+                        "BearerAuth": []
                     }
                 ],
                 "description": "Membuat izin (Permission) baru.",
@@ -1267,7 +1275,7 @@ const docTemplate = `{
             "get": {
                 "security": [
                     {
-                        "ApiKeyAuth": []
+                        "BearerAuth": []
                     }
                 ],
                 "description": "Mengambil detail izin berdasarkan ID.",
@@ -1320,7 +1328,7 @@ const docTemplate = `{
             "put": {
                 "security": [
                     {
-                        "ApiKeyAuth": []
+                        "BearerAuth": []
                     }
                 ],
                 "description": "Memperbarui detail izin.",
@@ -1385,7 +1393,7 @@ const docTemplate = `{
             "delete": {
                 "security": [
                     {
-                        "ApiKeyAuth": []
+                        "BearerAuth": []
                     }
                 ],
                 "description": "Menghapus izin berdasarkan ID.",
@@ -1440,7 +1448,7 @@ const docTemplate = `{
             "post": {
                 "security": [
                     {
-                        "ApiKeyAuth": []
+                        "BearerAuth": []
                     }
                 ],
                 "description": "Menghubungkan izin tertentu dengan peran tertentu.",
@@ -1498,7 +1506,7 @@ const docTemplate = `{
             "delete": {
                 "security": [
                     {
-                        "ApiKeyAuth": []
+                        "BearerAuth": []
                     }
                 ],
                 "description": "Memutus hubungan izin dari peran tertentu.",
@@ -1558,7 +1566,7 @@ const docTemplate = `{
             "get": {
                 "security": [
                     {
-                        "ApiKeyAuth": []
+                        "BearerAuth": []
                     }
                 ],
                 "description": "Mengambil daftar semua peran yang tersedia.",
@@ -1591,7 +1599,7 @@ const docTemplate = `{
             "post": {
                 "security": [
                     {
-                        "ApiKeyAuth": []
+                        "BearerAuth": []
                     }
                 ],
                 "description": "Membuat peran baru.",
@@ -1644,7 +1652,7 @@ const docTemplate = `{
             "get": {
                 "security": [
                     {
-                        "ApiKeyAuth": []
+                        "BearerAuth": []
                     }
                 ],
                 "description": "Mengambil detail peran berdasarkan ID.",
@@ -1697,7 +1705,7 @@ const docTemplate = `{
             "put": {
                 "security": [
                     {
-                        "ApiKeyAuth": []
+                        "BearerAuth": []
                     }
                 ],
                 "description": "Memperbarui nama atau deskripsi peran.",
@@ -1762,7 +1770,7 @@ const docTemplate = `{
             "delete": {
                 "security": [
                     {
-                        "ApiKeyAuth": []
+                        "BearerAuth": []
                     }
                 ],
                 "description": "Menghapus peran berdasarkan ID.",
@@ -1817,7 +1825,7 @@ const docTemplate = `{
             "get": {
                 "security": [
                     {
-                        "ApiKeyAuth": []
+                        "BearerAuth": []
                     }
                 ],
                 "description": "Mengambil statistik umum dan ringkasan seluruh sistem.",
@@ -1849,7 +1857,7 @@ const docTemplate = `{
             "get": {
                 "security": [
                     {
-                        "ApiKeyAuth": []
+                        "BearerAuth": []
                     }
                 ],
                 "description": "Mengambil detail statistik prestasi untuk mahasiswa tertentu.",
@@ -1904,7 +1912,7 @@ const docTemplate = `{
             "get": {
                 "security": [
                     {
-                        "ApiKeyAuth": []
+                        "BearerAuth": []
                     }
                 ],
                 "description": "Mengambil daftar semua profil mahasiswa.",
@@ -1937,7 +1945,7 @@ const docTemplate = `{
             "post": {
                 "security": [
                     {
-                        "ApiKeyAuth": []
+                        "BearerAuth": []
                     }
                 ],
                 "description": "Membuat profil mahasiswa baru (Membutuhkan User ID yang sudah ada).",
@@ -1997,7 +2005,7 @@ const docTemplate = `{
             "get": {
                 "security": [
                     {
-                        "ApiKeyAuth": []
+                        "BearerAuth": []
                     }
                 ],
                 "description": "Mengambil detail profil mahasiswa berdasarkan ID (UUID).",
@@ -2050,7 +2058,7 @@ const docTemplate = `{
             "put": {
                 "security": [
                     {
-                        "ApiKeyAuth": []
+                        "BearerAuth": []
                     }
                 ],
                 "description": "Memperbarui detail profil mahasiswa (NIM, Program Studi, Tahun Akademik).",
@@ -2115,7 +2123,7 @@ const docTemplate = `{
             "delete": {
                 "security": [
                     {
-                        "ApiKeyAuth": []
+                        "BearerAuth": []
                     }
                 ],
                 "description": "Menghapus profil mahasiswa berdasarkan ID (UUID).",
@@ -2170,7 +2178,7 @@ const docTemplate = `{
             "get": {
                 "security": [
                     {
-                        "ApiKeyAuth": []
+                        "BearerAuth": []
                     }
                 ],
                 "description": "Mengambil daftar semua prestasi (Achievement References) yang dimiliki oleh mahasiswa tertentu.",
@@ -2228,7 +2236,7 @@ const docTemplate = `{
             "patch": {
                 "security": [
                     {
-                        "ApiKeyAuth": []
+                        "BearerAuth": []
                     }
                 ],
                 "description": "Memperbarui Dosen Pembimbing (Advisor) untuk mahasiswa tertentu.",
@@ -2295,7 +2303,7 @@ const docTemplate = `{
             "get": {
                 "security": [
                     {
-                        "ApiKeyAuth": []
+                        "BearerAuth": []
                     }
                 ],
                 "description": "Mengambil daftar semua pengguna (Akses Admin/Role tertentu diperlukan).",
@@ -2328,7 +2336,7 @@ const docTemplate = `{
             "post": {
                 "security": [
                     {
-                        "ApiKeyAuth": []
+                        "BearerAuth": []
                     }
                 ],
                 "description": "Membuat pengguna baru dengan peran tertentu.",
@@ -2388,7 +2396,7 @@ const docTemplate = `{
             "get": {
                 "security": [
                     {
-                        "ApiKeyAuth": []
+                        "BearerAuth": []
                     }
                 ],
                 "description": "Mengambil satu pengguna berdasarkan ID mereka (UUID).",
@@ -2441,7 +2449,7 @@ const docTemplate = `{
             "put": {
                 "security": [
                     {
-                        "ApiKeyAuth": []
+                        "BearerAuth": []
                     }
                 ],
                 "description": "Memperbarui detail pengguna (termasuk password dan peran opsional).",
@@ -2506,7 +2514,7 @@ const docTemplate = `{
             "delete": {
                 "security": [
                     {
-                        "ApiKeyAuth": []
+                        "BearerAuth": []
                     }
                 ],
                 "description": "Menghapus pengguna berdasarkan ID.",
@@ -2564,7 +2572,7 @@ const docTemplate = `{
             "patch": {
                 "security": [
                     {
-                        "ApiKeyAuth": []
+                        "BearerAuth": []
                     }
                 ],
                 "description": "Memperbarui peran (Role) dari pengguna tertentu.",
@@ -3422,7 +3430,7 @@ const docTemplate = `{
     },
     "securityDefinitions": {
         "BearerAuth": {
-            "description": "Type \"Bearer\" followed by a space and JWT token.",
+            "description": "Tuliskan \"Bearer \" diikuti dengan token JWT Anda.",
             "type": "apiKey",
             "name": "Authorization",
             "in": "header"
@@ -3435,9 +3443,9 @@ var SwaggerInfo = &swag.Spec{
 	Version:          "1.0",
 	Host:             "localhost:3000",
 	BasePath:         "/",
-	Schemes:          []string{"http"},
+	Schemes:          []string{},
 	Title:            "Data Prestasi API",
-	Description:      "API Backend Data Prestasi (PostgreSQL & MongoDB)",
+	Description:      "Dokumentasi API untuk aplikasi Data Prestasi.",
 	InfoInstanceName: "swagger",
 	SwaggerTemplate:  docTemplate,
 	LeftDelim:        "{{",

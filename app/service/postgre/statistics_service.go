@@ -37,7 +37,7 @@ func NewStatisticsService(
 // @Summary Ambil Statistik Umum
 // @Description Mengambil statistik umum dan ringkasan seluruh sistem.
 // @Tags Statistics
-// @Security ApiKeyAuth
+// @Security BearerAuth
 // @Produce json
 // @Success 200 {object} modelpostgre.StatisticsResponse "Statistik umum berhasil diambil"
 // @Failure 500 {object} map[string]interface{} "Gagal mengambil statistik"
@@ -90,7 +90,7 @@ func (s *statisticsService) GetStatistics(c *fiber.Ctx) error {
 // @Summary Ambil Statistik Mahasiswa
 // @Description Mengambil detail statistik prestasi untuk mahasiswa tertentu.
 // @Tags Statistics
-// @Security ApiKeyAuth
+// @Security BearerAuth
 // @Produce json
 // @Param studentID path string true "ID Pengguna Mahasiswa (UUID)"
 // @Success 200 {object} modelpostgre.StatisticsResponse "Statistik mahasiswa berhasil diambil"

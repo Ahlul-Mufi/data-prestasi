@@ -31,7 +31,7 @@ func NewLecturerService(r repo.LecturerRepository, userRepo repo.UserRepository)
 // @Summary Ambil semua Dosen
 // @Description Mengambil daftar semua profil dosen.
 // @Tags Lecturers
-// @Security ApiKeyAuth
+// @Security BearerAuth
 // @Produce json
 // @Success 200 {array} modelpostgre.Lecturer "Daftar dosen"
 // @Failure 500 {object} map[string]interface{} "Gagal mengambil data dosen"
@@ -47,7 +47,7 @@ func (s *lecturerService) GetAll(c *fiber.Ctx) error {
 // @Summary Ambil Dosen berdasarkan ID
 // @Description Mengambil detail profil dosen berdasarkan ID (UUID).
 // @Tags Lecturers
-// @Security ApiKeyAuth
+// @Security BearerAuth
 // @Produce json
 // @Param id path string true "ID Pengguna Dosen (UUID)"
 // @Success 200 {object} modelpostgre.Lecturer "Dosen ditemukan"
@@ -74,7 +74,7 @@ func (s *lecturerService) GetByID(c *fiber.Ctx) error {
 // @Summary Ambil Mahasiswa Bimbingan Dosen
 // @Description Mengambil daftar mahasiswa yang dibimbing oleh dosen tertentu.
 // @Tags Lecturers
-// @Security ApiKeyAuth
+// @Security BearerAuth
 // @Produce json
 // @Param id path string true "ID Pengguna Dosen (UUID)"
 // @Success 200 {array} modelpostgre.Student "Daftar mahasiswa bimbingan"
@@ -106,7 +106,7 @@ func (s *lecturerService) GetAdvisees(c *fiber.Ctx) error {
 // @Summary Buat profil Dosen baru
 // @Description Membuat profil dosen baru (Membutuhkan User ID yang sudah ada).
 // @Tags Lecturers
-// @Security ApiKeyAuth
+// @Security BearerAuth
 // @Accept json
 // @Produce json
 // @Param createLecturerRequest body m.CreateLecturerRequest true "Detail Dosen Baru"
@@ -144,7 +144,7 @@ func (s *lecturerService) CreateLecturer(c *fiber.Ctx) error {
 // @Summary Perbarui profil Dosen
 // @Description Memperbarui detail profil dosen (NIDN, Departemen).
 // @Tags Lecturers
-// @Security ApiKeyAuth
+// @Security BearerAuth
 // @Accept json
 // @Produce json
 // @Param id path string true "ID Pengguna Dosen (UUID)"
@@ -191,7 +191,7 @@ func (s *lecturerService) UpdateLecturer(c *fiber.Ctx) error {
 // @Summary Hapus profil Dosen
 // @Description Menghapus profil dosen berdasarkan ID (UUID).
 // @Tags Lecturers
-// @Security ApiKeyAuth
+// @Security BearerAuth
 // @Produce json
 // @Param id path string true "ID Pengguna Dosen (UUID)"
 // @Success 200 {object} modelpostgre.Lecturer "Profil dosen berhasil dihapus"

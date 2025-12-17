@@ -528,8 +528,14 @@ definitions:
     type: object
 host: localhost:3000
 info:
-  contact: {}
-  description: API Backend Data Prestasi (PostgreSQL & MongoDB)
+  contact:
+    email: ahlulmufi@gmail.com
+    name: Ahlul Mufi
+  description: Dokumentasi API untuk aplikasi Data Prestasi.
+  license:
+    name: Apache 2.0
+    url: http://www.apache.org/licenses/LICENSE-2.0.html
+  termsOfService: http://swagger.io/terms/
   title: Data Prestasi API
   version: "1.0"
 paths:
@@ -552,7 +558,7 @@ paths:
             additionalProperties: true
             type: object
       security:
-      - ApiKeyAuth: []
+      - BearerAuth: []
       summary: Ambil Semua Prestasi (Admin/All)
       tags:
       - Achievement References (Common)
@@ -590,7 +596,7 @@ paths:
             additionalProperties: true
             type: object
       security:
-      - ApiKeyAuth: []
+      - BearerAuth: []
       summary: Buat Referensi Prestasi
       tags:
       - Achievement References (Student)
@@ -633,7 +639,7 @@ paths:
             additionalProperties: true
             type: object
       security:
-      - ApiKeyAuth: []
+      - BearerAuth: []
       summary: Hapus Referensi Prestasi
       tags:
       - Achievement References (Student)
@@ -668,7 +674,7 @@ paths:
             additionalProperties: true
             type: object
       security:
-      - ApiKeyAuth: []
+      - BearerAuth: []
       summary: Ambil Referensi Prestasi berdasarkan ID
       tags:
       - Achievement References (Common)
@@ -717,7 +723,7 @@ paths:
             additionalProperties: true
             type: object
       security:
-      - ApiKeyAuth: []
+      - BearerAuth: []
       summary: Perbarui Referensi Prestasi
       tags:
       - Achievement References (Student)
@@ -756,7 +762,7 @@ paths:
             additionalProperties: true
             type: object
       security:
-      - ApiKeyAuth: []
+      - BearerAuth: []
       summary: Ambil Histori Referensi Prestasi
       tags:
       - Achievement References (Common)
@@ -806,7 +812,7 @@ paths:
             additionalProperties: true
             type: object
       security:
-      - ApiKeyAuth: []
+      - BearerAuth: []
       summary: Tolak Prestasi
       tags:
       - Achievement References (Verifier)
@@ -847,7 +853,7 @@ paths:
             additionalProperties: true
             type: object
       security:
-      - ApiKeyAuth: []
+      - BearerAuth: []
       summary: Submit Referensi Prestasi
       tags:
       - Achievement References (Student)
@@ -889,7 +895,7 @@ paths:
             additionalProperties: true
             type: object
       security:
-      - ApiKeyAuth: []
+      - BearerAuth: []
       summary: Verifikasi Prestasi
       tags:
       - Achievement References (Verifier)
@@ -914,7 +920,7 @@ paths:
             additionalProperties: true
             type: object
       security:
-      - ApiKeyAuth: []
+      - BearerAuth: []
       summary: Ambil Prestasi Bimbingan Dosen
       tags:
       - Achievement References (Lecturer)
@@ -942,7 +948,7 @@ paths:
             additionalProperties: true
             type: object
       security:
-      - ApiKeyAuth: []
+      - BearerAuth: []
       summary: Ambil Semua Prestasi Saya
       tags:
       - Achievement References (Student)
@@ -965,7 +971,7 @@ paths:
             additionalProperties: true
             type: object
       security:
-      - ApiKeyAuth: []
+      - BearerAuth: []
       summary: Ambil Prestasi Pending
       tags:
       - Achievement References (Verifier)
@@ -1049,7 +1055,7 @@ paths:
             additionalProperties: true
             type: object
       security:
-      - ApiKeyAuth: []
+      - BearerAuth: []
       summary: Ambil profil pengguna
       tags:
       - Auth
@@ -1113,7 +1119,7 @@ paths:
             additionalProperties: true
             type: object
       security:
-      - ApiKeyAuth: []
+      - BearerAuth: []
       summary: Ambil semua Dosen
       tags:
       - Lecturers
@@ -1151,7 +1157,7 @@ paths:
             additionalProperties: true
             type: object
       security:
-      - ApiKeyAuth: []
+      - BearerAuth: []
       summary: Buat profil Dosen baru
       tags:
       - Lecturers
@@ -1187,7 +1193,7 @@ paths:
             additionalProperties: true
             type: object
       security:
-      - ApiKeyAuth: []
+      - BearerAuth: []
       summary: Hapus profil Dosen
       tags:
       - Lecturers
@@ -1222,7 +1228,7 @@ paths:
             additionalProperties: true
             type: object
       security:
-      - ApiKeyAuth: []
+      - BearerAuth: []
       summary: Ambil Dosen berdasarkan ID
       tags:
       - Lecturers
@@ -1265,7 +1271,7 @@ paths:
             additionalProperties: true
             type: object
       security:
-      - ApiKeyAuth: []
+      - BearerAuth: []
       summary: Perbarui profil Dosen
       tags:
       - Lecturers
@@ -1303,7 +1309,7 @@ paths:
             additionalProperties: true
             type: object
       security:
-      - ApiKeyAuth: []
+      - BearerAuth: []
       summary: Ambil Mahasiswa Bimbingan Dosen
       tags:
       - Lecturers
@@ -1325,7 +1331,7 @@ paths:
             additionalProperties: true
             type: object
       security:
-      - ApiKeyAuth: []
+      - BearerAuth: []
       summary: Ambil semua izin
       tags:
       - Permissions
@@ -1358,7 +1364,7 @@ paths:
             additionalProperties: true
             type: object
       security:
-      - ApiKeyAuth: []
+      - BearerAuth: []
       summary: Buat izin baru
       tags:
       - Permissions
@@ -1394,7 +1400,7 @@ paths:
             additionalProperties: true
             type: object
       security:
-      - ApiKeyAuth: []
+      - BearerAuth: []
       summary: Hapus izin
       tags:
       - Permissions
@@ -1429,7 +1435,7 @@ paths:
             additionalProperties: true
             type: object
       security:
-      - ApiKeyAuth: []
+      - BearerAuth: []
       summary: Ambil izin berdasarkan ID
       tags:
       - Permissions
@@ -1472,7 +1478,7 @@ paths:
             additionalProperties: true
             type: object
       security:
-      - ApiKeyAuth: []
+      - BearerAuth: []
       summary: Perbarui izin
       tags:
       - Permissions
@@ -1511,7 +1517,7 @@ paths:
             additionalProperties: true
             type: object
       security:
-      - ApiKeyAuth: []
+      - BearerAuth: []
       summary: Hapus Izin dari Peran
       tags:
       - Roles & Permissions
@@ -1549,7 +1555,7 @@ paths:
             additionalProperties: true
             type: object
       security:
-      - ApiKeyAuth: []
+      - BearerAuth: []
       summary: Tambahkan Izin ke Peran
       tags:
       - Roles & Permissions
@@ -1571,7 +1577,7 @@ paths:
             additionalProperties: true
             type: object
       security:
-      - ApiKeyAuth: []
+      - BearerAuth: []
       summary: Ambil semua peran
       tags:
       - Roles
@@ -1604,7 +1610,7 @@ paths:
             additionalProperties: true
             type: object
       security:
-      - ApiKeyAuth: []
+      - BearerAuth: []
       summary: Buat peran baru
       tags:
       - Roles
@@ -1640,7 +1646,7 @@ paths:
             additionalProperties: true
             type: object
       security:
-      - ApiKeyAuth: []
+      - BearerAuth: []
       summary: Hapus peran
       tags:
       - Roles
@@ -1675,7 +1681,7 @@ paths:
             additionalProperties: true
             type: object
       security:
-      - ApiKeyAuth: []
+      - BearerAuth: []
       summary: Ambil peran berdasarkan ID
       tags:
       - Roles
@@ -1718,7 +1724,7 @@ paths:
             additionalProperties: true
             type: object
       security:
-      - ApiKeyAuth: []
+      - BearerAuth: []
       summary: Perbarui peran
       tags:
       - Roles
@@ -1738,7 +1744,7 @@ paths:
             additionalProperties: true
             type: object
       security:
-      - ApiKeyAuth: []
+      - BearerAuth: []
       summary: Ambil Statistik Umum
       tags:
       - Statistics
@@ -1774,7 +1780,7 @@ paths:
             additionalProperties: true
             type: object
       security:
-      - ApiKeyAuth: []
+      - BearerAuth: []
       summary: Ambil Statistik Mahasiswa
       tags:
       - Statistics
@@ -1796,7 +1802,7 @@ paths:
             additionalProperties: true
             type: object
       security:
-      - ApiKeyAuth: []
+      - BearerAuth: []
       summary: Ambil semua Mahasiswa
       tags:
       - Students
@@ -1834,7 +1840,7 @@ paths:
             additionalProperties: true
             type: object
       security:
-      - ApiKeyAuth: []
+      - BearerAuth: []
       summary: Buat profil Mahasiswa baru
       tags:
       - Students
@@ -1870,7 +1876,7 @@ paths:
             additionalProperties: true
             type: object
       security:
-      - ApiKeyAuth: []
+      - BearerAuth: []
       summary: Hapus profil Mahasiswa
       tags:
       - Students
@@ -1905,7 +1911,7 @@ paths:
             additionalProperties: true
             type: object
       security:
-      - ApiKeyAuth: []
+      - BearerAuth: []
       summary: Ambil Mahasiswa berdasarkan ID
       tags:
       - Students
@@ -1949,7 +1955,7 @@ paths:
             additionalProperties: true
             type: object
       security:
-      - ApiKeyAuth: []
+      - BearerAuth: []
       summary: Perbarui profil Mahasiswa
       tags:
       - Students
@@ -1988,7 +1994,7 @@ paths:
             additionalProperties: true
             type: object
       security:
-      - ApiKeyAuth: []
+      - BearerAuth: []
       summary: Ambil Prestasi Mahasiswa
       tags:
       - Students
@@ -2032,7 +2038,7 @@ paths:
             additionalProperties: true
             type: object
       security:
-      - ApiKeyAuth: []
+      - BearerAuth: []
       summary: Perbarui Dosen Pembimbing Mahasiswa
       tags:
       - Students
@@ -2054,7 +2060,7 @@ paths:
             additionalProperties: true
             type: object
       security:
-      - ApiKeyAuth: []
+      - BearerAuth: []
       summary: Ambil semua pengguna
       tags:
       - Users
@@ -2092,7 +2098,7 @@ paths:
             additionalProperties: true
             type: object
       security:
-      - ApiKeyAuth: []
+      - BearerAuth: []
       summary: Buat pengguna baru
       tags:
       - Users
@@ -2130,7 +2136,7 @@ paths:
             additionalProperties: true
             type: object
       security:
-      - ApiKeyAuth: []
+      - BearerAuth: []
       summary: Hapus pengguna
       tags:
       - Users
@@ -2165,7 +2171,7 @@ paths:
             additionalProperties: true
             type: object
       security:
-      - ApiKeyAuth: []
+      - BearerAuth: []
       summary: Ambil pengguna berdasarkan ID
       tags:
       - Users
@@ -2209,7 +2215,7 @@ paths:
             additionalProperties: true
             type: object
       security:
-      - ApiKeyAuth: []
+      - BearerAuth: []
       summary: Perbarui pengguna
       tags:
       - Users
@@ -2254,15 +2260,13 @@ paths:
             additionalProperties: true
             type: object
       security:
-      - ApiKeyAuth: []
+      - BearerAuth: []
       summary: Perbarui peran pengguna
       tags:
       - Users
-schemes:
-- http
 securityDefinitions:
   BearerAuth:
-    description: Type "Bearer" followed by a space and JWT token.
+    description: Tuliskan "Bearer " diikuti dengan token JWT Anda.
     in: header
     name: Authorization
     type: apiKey

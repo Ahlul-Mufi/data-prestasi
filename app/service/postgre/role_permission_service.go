@@ -26,7 +26,7 @@ func NewRolePermissionService(r repo.RolePermissionRepository) RolePermissionSer
 // @Summary Tambahkan Izin ke Peran
 // @Description Menghubungkan izin tertentu dengan peran tertentu.
 // @Tags Roles & Permissions
-// @Security ApiKeyAuth
+// @Security BearerAuth
 // @Accept json
 // @Produce json
 // @Param addRolePermissionRequest body m.AddRolePermissionRequest true "Role ID dan Permission ID"
@@ -61,7 +61,7 @@ func (s *rolePermissionService) Add(c *fiber.Ctx) error {
 // @Summary Hapus Izin dari Peran
 // @Description Memutus hubungan izin dari peran tertentu.
 // @Tags Roles & Permissions
-// @Security ApiKeyAuth
+// @Security BearerAuth
 // @Accept json
 // @Produce json
 // @Param removeRolePermissionRequest body m.RolePermission true "Role ID dan Permission ID"

@@ -27,7 +27,7 @@ func NewRoleService(r repo.RoleRepository) RoleService {
 // @Summary Ambil semua peran
 // @Description Mengambil daftar semua peran yang tersedia.
 // @Tags Roles
-// @Security ApiKeyAuth
+// @Security BearerAuth
 // @Produce json
 // @Success 200 {array} modelpostgre.Role "Daftar peran"
 // @Failure 500 {object} map[string]interface{} "Gagal mengambil peran"
@@ -43,7 +43,7 @@ func (s *roleService) GetAll(c *fiber.Ctx) error {
 // @Summary Ambil peran berdasarkan ID
 // @Description Mengambil detail peran berdasarkan ID.
 // @Tags Roles
-// @Security ApiKeyAuth
+// @Security BearerAuth
 // @Produce json
 // @Param id path string true "ID Peran (UUID)"
 // @Success 200 {object} modelpostgre.Role "Peran ditemukan"
@@ -69,7 +69,7 @@ func (s *roleService) GetByID(c *fiber.Ctx) error {
 // @Summary Buat peran baru
 // @Description Membuat peran baru.
 // @Tags Roles
-// @Security ApiKeyAuth
+// @Security BearerAuth
 // @Accept json
 // @Produce json
 // @Param createRoleRequest body m.CreateRoleRequest true "Detail Peran Baru"
@@ -100,7 +100,7 @@ func (s *roleService) Create(c *fiber.Ctx) error {
 // @Summary Perbarui peran
 // @Description Memperbarui nama atau deskripsi peran.
 // @Tags Roles
-// @Security ApiKeyAuth
+// @Security BearerAuth
 // @Accept json
 // @Produce json
 // @Param id path string true "ID Peran (UUID)"
@@ -138,7 +138,7 @@ func (s *roleService) Update(c *fiber.Ctx) error {
 // @Summary Hapus peran
 // @Description Menghapus peran berdasarkan ID.
 // @Tags Roles
-// @Security ApiKeyAuth
+// @Security BearerAuth
 // @Produce json
 // @Param id path string true "ID Peran (UUID)"
 // @Success 200 {object} modelpostgre.Role "Peran berhasil dihapus"

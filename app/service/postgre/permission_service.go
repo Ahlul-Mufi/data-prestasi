@@ -27,7 +27,7 @@ func NewPermissionService(r repo.PermissionRepository) PermissionService {
 // @Summary Ambil semua izin
 // @Description Mengambil daftar semua izin yang tersedia (Permission).
 // @Tags Permissions
-// @Security ApiKeyAuth
+// @Security BearerAuth
 // @Produce json
 // @Success 200 {array} modelpostgre.Permission "Daftar izin"
 // @Failure 500 {object} map[string]interface{} "Gagal mengambil izin"
@@ -43,7 +43,7 @@ func (s *permissionService) GetAll(c *fiber.Ctx) error {
 // @Summary Ambil izin berdasarkan ID
 // @Description Mengambil detail izin berdasarkan ID.
 // @Tags Permissions
-// @Security ApiKeyAuth
+// @Security BearerAuth
 // @Produce json
 // @Param id path string true "ID Izin (UUID)"
 // @Success 200 {object} modelpostgre.Permission "Izin ditemukan"
@@ -69,7 +69,7 @@ func (s *permissionService) GetByID(c *fiber.Ctx) error {
 // @Summary Buat izin baru
 // @Description Membuat izin (Permission) baru.
 // @Tags Permissions
-// @Security ApiKeyAuth
+// @Security BearerAuth
 // @Accept json
 // @Produce json
 // @Param createPermissionRequest body m.CreatePermissionRequest true "Detail Izin Baru"
@@ -101,7 +101,7 @@ func (s *permissionService) Create(c *fiber.Ctx) error {
 // @Summary Perbarui izin
 // @Description Memperbarui detail izin.
 // @Tags Permissions
-// @Security ApiKeyAuth
+// @Security BearerAuth
 // @Accept json
 // @Produce json
 // @Param id path string true "ID Izin (UUID)"
@@ -140,7 +140,7 @@ func (s *permissionService) Update(c *fiber.Ctx) error {
 // @Summary Hapus izin
 // @Description Menghapus izin berdasarkan ID.
 // @Tags Permissions
-// @Security ApiKeyAuth
+// @Security BearerAuth
 // @Produce json
 // @Param id path string true "ID Izin (UUID)"
 // @Success 200 {object} modelpostgre.Permission "Izin berhasil dihapus"

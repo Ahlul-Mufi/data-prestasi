@@ -140,7 +140,7 @@ func (s *userService) Logout(c *fiber.Ctx) error {
 // @Summary Ambil profil pengguna
 // @Description Mengambil detail profil pengguna yang sudah terautentikasi.
 // @Tags Auth
-// @Security ApiKeyAuth
+// @Security BearerAuth
 // @Produce json
 // @Success 200 {object} modelpostgre.User "Profil pengguna berhasil diambil"
 // @Failure 401 {object} map[string]interface{} "Tidak terotorisasi (Token tidak valid)"
@@ -174,7 +174,7 @@ func (s *userService) Profile(c *fiber.Ctx) error {
 // @Summary Ambil semua pengguna
 // @Description Mengambil daftar semua pengguna (Akses Admin/Role tertentu diperlukan).
 // @Tags Users
-// @Security ApiKeyAuth
+// @Security BearerAuth
 // @Produce json
 // @Success 200 {array} modelpostgre.User "Daftar pengguna"
 // @Failure 500 {object} map[string]interface{} "Gagal mengambil pengguna"
@@ -196,7 +196,7 @@ func (s *userService) GetUsers(c *fiber.Ctx) error {
 // @Summary Ambil pengguna berdasarkan ID
 // @Description Mengambil satu pengguna berdasarkan ID mereka (UUID).
 // @Tags Users
-// @Security ApiKeyAuth
+// @Security BearerAuth
 // @Produce json
 // @Param id path string true "ID Pengguna (UUID)"
 // @Success 200 {object} modelpostgre.User "Pengguna ditemukan"
@@ -226,7 +226,7 @@ func (s *userService) GetUserByID(c *fiber.Ctx) error {
 // @Summary Buat pengguna baru
 // @Description Membuat pengguna baru dengan peran tertentu.
 // @Tags Users
-// @Security ApiKeyAuth
+// @Security BearerAuth
 // @Accept json
 // @Produce json
 // @Param createUserRequest body m.CreateUserRequest true "Informasi pengguna baru"
@@ -274,7 +274,7 @@ func (s *userService) CreateUser(c *fiber.Ctx) error {
 // @Summary Perbarui pengguna
 // @Description Memperbarui detail pengguna (termasuk password dan peran opsional).
 // @Tags Users
-// @Security ApiKeyAuth
+// @Security BearerAuth
 // @Accept json
 // @Produce json
 // @Param id path string true "ID Pengguna (UUID)"
@@ -339,7 +339,7 @@ func (s *userService) UpdateUser(c *fiber.Ctx) error {
 // @Summary Hapus pengguna
 // @Description Menghapus pengguna berdasarkan ID.
 // @Tags Users
-// @Security ApiKeyAuth
+// @Security BearerAuth
 // @Produce json
 // @Param id path string true "ID Pengguna (UUID)"
 // @Success 200 {object} map[string]string "Pengguna berhasil dihapus"
@@ -369,7 +369,7 @@ func (s *userService) DeleteUser(c *fiber.Ctx) error {
 // @Summary Perbarui peran pengguna
 // @Description Memperbarui peran (Role) dari pengguna tertentu.
 // @Tags Users
-// @Security ApiKeyAuth
+// @Security BearerAuth
 // @Accept json
 // @Produce json
 // @Param id path string true "ID Pengguna (UUID)"

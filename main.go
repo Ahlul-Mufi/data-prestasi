@@ -21,15 +21,22 @@ import (
 
 // @title Data Prestasi API
 // @version 1.0
-// @description API Backend Data Prestasi (PostgreSQL & MongoDB)
+// @description Dokumentasi API untuk aplikasi Data Prestasi.
+// @termsOfService http://swagger.io/terms/
+
+// @contact.name Ahlul Mufi
+// @contact.email ahlulmufi@gmail.com
+
+// @license.name Apache 2.0
+// @license.url http://www.apache.org/licenses/LICENSE-2.0.html
+
 // @host localhost:3000
 // @BasePath /
-// @schemes http
 
 // @securityDefinitions.apikey BearerAuth
 // @in header
 // @name Authorization
-// @description Type "Bearer" followed by a space and JWT token.
+// @description Tuliskan "Bearer " diikuti dengan token JWT Anda.
 func main() {
 	if err := godotenv.Load(); err != nil {
 		log.Println("No .env file found, using environment variables")
