@@ -40,6 +40,5 @@ func SetupAchievementReferenceRoutes(api fiber.Router, arService servicepostgre.
 		mw.RBACMiddleware(userRepo, "achievement:read", "achievement:manage"),
 		arService.GetAllAchievements,
 	)
-
 	arGroup.Get("/:id/history", mw.AuthMiddleware(), arService.GetHistory)
 }

@@ -28,13 +28,15 @@ func SetupRoutes(
 	ss := studentService.(servicepostgre.StudentService)
 	ls := lecturerService.(servicepostgre.LecturerService)
 	sts := statisticsService.(servicepostgre.StatisticsService)
+	ps := permissionService.(servicepostgre.PermissionService)
 
 	SetupAuthRoutes(api, us)
 	SetupUserRoutes(api, us, ur)
-	SetupRoleRoutes(api, rs)
+	SetupRoleRoutes(api, rs, ur)
 	SetupRolePermissionRoutes(api, rps)
 	SetupAchievementReferenceRoutes(api, ars, ur)
 	SetupStudentRoutes(api, ss, ur)
 	SetupLecturerRoutes(api, ls, ur)
 	SetupStatisticsRoutes(api, sts)
+	SetupPermissionRoutes(api, ps, ur)
 }
