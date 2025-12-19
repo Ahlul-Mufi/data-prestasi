@@ -28,7 +28,7 @@ func NewLecturerRepository(db *sql.DB) LecturerRepository {
 
 func (r *lecturerRepository) GetAll() ([]m.Lecturer, error) {
 	rows, err := r.db.Query(`
-		SELECT id, user_id, lecturer_id, department, created_at, updated_at 
+		SELECT id, user_id, lecturer_id, department, created_at
 		FROM lecturers
 	`)
 	if err != nil {
@@ -51,7 +51,7 @@ func (r *lecturerRepository) GetAll() ([]m.Lecturer, error) {
 func (r *lecturerRepository) GetByID(id uuid.UUID) (m.Lecturer, error) {
 	var l m.Lecturer
 	err := r.db.QueryRow(`
-		SELECT id, user_id, lecturer_id, department, created_at, updated_at 
+		SELECT id, user_id, lecturer_id, department, created_at 
 		FROM lecturers WHERE id=$1
 	`, id).Scan(&l.ID, &l.UserID, &l.LecturerID, &l.Department, &l.CreatedAt)
 
@@ -64,7 +64,7 @@ func (r *lecturerRepository) GetByID(id uuid.UUID) (m.Lecturer, error) {
 func (r *lecturerRepository) GetByUserID(userID uuid.UUID) (m.Lecturer, error) {
 	var l m.Lecturer
 	err := r.db.QueryRow(`
-		SELECT id, user_id, lecturer_id, department, created_at, updated_at 
+		SELECT id, user_id, lecturer_id, department, created_at
 		FROM lecturers WHERE user_id=$1
 	`, userID).Scan(&l.ID, &l.UserID, &l.LecturerID, &l.Department, &l.CreatedAt)
 
@@ -78,7 +78,7 @@ func (r *lecturerRepository) Create(lecturer m.Lecturer) (m.Lecturer, error) {
 	err := r.db.QueryRow(`
 		INSERT INTO lecturers (id, user_id, lecturer_id, department)
 		VALUES ($1, $2, $3, $4)
-		RETURNING created_at, updated_at
+		RETURNING created_at
 	`, lecturer.ID, lecturer.UserID, lecturer.LecturerID, lecturer.Department).Scan(
 		&lecturer.CreatedAt,
 	)
@@ -93,7 +93,7 @@ func (r *lecturerRepository) Create(lecturer m.Lecturer) (m.Lecturer, error) {
 func (r *lecturerRepository) Update(lecturer m.Lecturer) (m.Lecturer, error) {
 	result, err := r.db.Exec(`
 		UPDATE lecturers 
-		SET lecturer_id=$2, department=$3, updated_at=NOW()
+		SET lecturer_id=$2, department=$3
 		WHERE id=$1
 	`, lecturer.ID, lecturer.LecturerID, lecturer.Department)
 
@@ -128,7 +128,7 @@ func (r *lecturerRepository) Delete(id uuid.UUID) error {
 
 func (r *lecturerRepository) GetAdvisees(lecturerID uuid.UUID) ([]m.Student, error) {
 	rows, err := r.db.Query(`
-		SELECT id, user_id, student_id, program_study, academic_year, advisor_id, created_at, updated_at 
+		SELECT id, user_id, student_id, program_study, academic_year, advisor_id, created_at
 		FROM students 
 		WHERE advisor_id = $1
 	`, lecturerID)
